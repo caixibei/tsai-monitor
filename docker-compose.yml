@@ -1,0 +1,16 @@
+version: "3"
+services:
+
+  tsai-monitor:
+    image: tsai-monitor:latest
+    container_name: tsai-monitor
+    privileged: false
+    restart: always
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - "7162:7162"
+    environment:
+      - SERVER_PORT=7162
+      - APPLICATION_NAME=tsai-monitor

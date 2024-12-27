@@ -1,0 +1,6 @@
+server:
+  port: ${SERVER_PORT:7162}
+
+spring:
+  application:
+    name: ${APPLICATION_NAME:tsai-monitor}
