@@ -13,7 +13,6 @@ MAINTAINER caixibei@139.com
 ENV TZ=Asia/Shanghai
 ENV LANG C.UTF-8
 
-
 # 创建符号链接将时区信息链接到 /etc/localtime，并写入时区信息到 /etc/timezone 文件
 RUN ln -sf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
@@ -27,5 +26,6 @@ WORKDIR /tsai-monitor
 COPY ./tsai-monitor-1.1.0.jar /tsai-monitor
 
 # 容器启动时命令，先休眠 30s ，然后使用指定的JVM参数运行 tsai-monitor-1.1.0.jar
-ENTRYPOINT ["java","-jar","/tsai-monitor/tsai-monitor-1.1.0.jar"]
 # CMD sleep 30;java $JAVA_OPTS -jar /tsai-monitor/tsai-monitor-1.1.0.jar
+ENTRYPOINT ["java","-jar","/tsai-monitor/tsai-monitor-1.1.0.jar"]
+
