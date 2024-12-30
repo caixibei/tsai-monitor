@@ -13,7 +13,7 @@ MAINTAINER caixibei@139.com
 # LANG：设置语言环境为 UTF-8
 # JAVA_OPTS：设置 JVM 启动参数，包括最小堆内存 128m，最大堆内存为 256m，以及使用 /dev/urandom 作为熵源：
 # ENV JAVA_OPTS="-Xms128m -Xmx256m -Djava.security.egd=file:/dev/./urandom"
-ENV JAVA_OPTS="-Xms128m -Xmx256m"
+ENV JAVA_OPTS="-Xms256m -Xmx512m"
 ENV TZ=Asia/Shanghai
 ENV LANG C.UTF-8
 
