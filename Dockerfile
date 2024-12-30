@@ -1,6 +1,10 @@
 # 使用 openjdk 运行时作为基础镜像，版本 8
 FROM openjdk:8
+
+# 定义版本号
 ARG VERSION=1.1.0
+ENV VERSION=${VERSION}
+
 # 指定维护人员信息
 MAINTAINER caixibei@139.com
 
@@ -16,6 +20,7 @@ ENV LANG C.UTF-8
 # 创建符号链接将时区信息链接到 /etc/localtime，并写入时区信息到 /etc/timezone 文件
 RUN ln -sf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
+
 # 创建目录 /tsai-monitor
 RUN mkdir -p "/tsai-monitor"
 
@@ -27,5 +32,5 @@ COPY ./target/tsai-monitor-${VERSION}.jar /tsai-monitor
 
 # 容器启动时命令，先休眠 30s ，然后使用指定的JVM参数运行 tsai-monitor-1.1.0.jar
 # CMD sleep 30;java $JAVA_OPTS -jar /tsai-monitor/tsai-monitor-1.1.0.jar
-ENTRYPOINT ["java","-jar","/tsai-monitor/tsai-monitor-${VERSION}.jar"]
+ENTRYPOINT ["sh", "-c","java $JAVA_OPTS ","-jar","/tsai-monitor/tsai-monitor-${VERSION}.jar"]
 
