@@ -323,6 +323,7 @@ const SystemComp = {
         get('/oshi/getSystemInfo')
           .then((res) => {
             systemInfo.value = res
+            console.log('-------->',res)
           })
           .catch(error => {
             console.log(error);
