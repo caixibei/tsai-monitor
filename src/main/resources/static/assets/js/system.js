@@ -7,7 +7,7 @@ const systemHtml = `
         </div>
       </template>
        <el-descriptions
-          :column="1"
+          :column="2"
           size="small"
           border
         >
@@ -20,7 +20,7 @@ const systemHtml = `
                操作系统名称
              </div>
            </template>
-           kooriookami
+           {{ systemInfo?.osName }}
          </el-descriptions-item>
          <el-descriptions-item>
            <template #label>
@@ -28,10 +28,10 @@ const systemHtml = `
                <el-icon :style="iconStyle">
                  <user />
                </el-icon>
-               操作系统名称
+               操作系统版本号
              </div>
            </template>
-           kooriookami
+           {{ systemInfo?.osVersion }}
          </el-descriptions-item>
          <el-descriptions-item>
            <template #label>
@@ -39,10 +39,10 @@ const systemHtml = `
                <el-icon :style="iconStyle">
                  <user />
                </el-icon>
-               操作系统名称
+               操作系统架构
              </div>
            </template>
-           kooriookami
+           {{ systemInfo?.osArch }}
          </el-descriptions-item>
          <el-descriptions-item>
            <template #label>
@@ -50,10 +50,142 @@ const systemHtml = `
                <el-icon :style="iconStyle">
                  <user />
                </el-icon>
-               操作系统名称
+               工作目录路径
              </div>
            </template>
-           kooriookami
+           {{ systemInfo?.userDir }}
+         </el-descriptions-item>
+         <el-descriptions-item>
+           <template #label>
+             <div class="cell-item">
+               <el-icon :style="iconStyle">
+                 <user />
+               </el-icon>
+               用户主目录路径
+             </div>
+           </template>
+            {{ systemInfo?.userHome }}
+         </el-descriptions-item>
+         <el-descriptions-item>
+           <template #label>
+             <div class="cell-item">
+               <el-icon :style="iconStyle">
+                 <user />
+               </el-icon>
+               操作系统用户
+             </div>
+           </template>
+           {{ systemInfo?.userName }}
+         </el-descriptions-item>
+         <el-descriptions-item>
+           <template #label>
+             <div class="cell-item">
+               <el-icon :style="iconStyle">
+                 <user />
+               </el-icon>
+               用户变量
+             </div>
+           </template>
+           {{ systemInfo?.userVariant }}
+         </el-descriptions-item>
+         <el-descriptions-item>
+           <template #label>
+             <div class="cell-item">
+               <el-icon :style="iconStyle">
+                 <user />
+               </el-icon>
+               操作系统时区
+             </div>
+           </template>
+           {{ systemInfo?.userTimezone }}
+         </el-descriptions-item>
+         <el-descriptions-item>
+           <template #label>
+             <div class="cell-item">
+               <el-icon :style="iconStyle">
+                 <user />
+               </el-icon>
+               语言
+             </div>
+           </template>
+           {{ systemInfo?.userLanguage }}
+         </el-descriptions-item>
+         <el-descriptions-item>
+           <template #label>
+             <div class="cell-item">
+               <el-icon :style="iconStyle">
+                 <user />
+               </el-icon>
+               用户域
+             </div>
+           </template>
+           {{ systemInfo?.sysEnv?.USERDOMAIN_ROAMINGPROFILE }}
+         </el-descriptions-item>
+         <el-descriptions-item>
+           <template #label>
+             <div class="cell-item">
+               <el-icon :style="iconStyle">
+                 <user />
+               </el-icon>
+               处理器级别
+             </div>
+           </template>
+           {{ systemInfo?.sysEnv?.PROCESSOR_LEVEL }}
+         </el-descriptions-item>
+         <el-descriptions-item>
+           <template #label>
+             <div class="cell-item">
+               <el-icon :style="iconStyle">
+                 <user />
+               </el-icon>
+               会话名称
+             </div>
+           </template>
+           {{ systemInfo?.sysEnv?.SESSIONNAME }}
+         </el-descriptions-item>
+         <el-descriptions-item>
+           <template #label>
+             <div class="cell-item">
+               <el-icon :style="iconStyle">
+                 <user />
+               </el-icon>
+               Java安装目录
+             </div>
+           </template>
+           {{ systemInfo?.sysEnv?.JAVA_HOME }}
+         </el-descriptions-item>
+         <el-descriptions-item>
+           <template #label>
+             <div class="cell-item">
+               <el-icon :style="iconStyle">
+                 <user />
+               </el-icon>
+               Maven安装目录
+             </div>
+           </template>
+           {{ systemInfo?.sysEnv?.MAVEN_HOME }}
+         </el-descriptions-item>
+         <el-descriptions-item>
+           <template #label>
+             <div class="cell-item">
+               <el-icon :style="iconStyle">
+                 <user />
+               </el-icon>
+               系统环境变量
+             </div>
+           </template>
+           {{ systemInfo?.sysEnv?.PATH }}
+         </el-descriptions-item>
+         <el-descriptions-item>
+           <template #label>
+             <div class="cell-item">
+               <el-icon :style="iconStyle">
+                 <user />
+               </el-icon>
+               操作系统类型
+             </div>
+           </template>
+           {{ systemInfo?.sysEnv?.OS }}
          </el-descriptions-item>
        </el-descriptions>
     </el-card>
@@ -183,8 +315,20 @@ const systemHtml = `
 const SystemComp = {
     template: systemHtml,
     setup() {
-        const systemName = ref(undefined);
+      const systemInfo = ref({});
 
-        return {systemName};
+      // 获取服务器系统信息
+      const getSystemInfo = () => {
+        get('/oshi/getSystemInfo')
+          .then((res) => {
+            systemInfo.value = res
+            console.log(res,'====')
+          })
+          .catch(error => {
+            console.error(error)
+          })
+      }
+      getSystemInfo()
+      return { systemInfo };
     }
 }

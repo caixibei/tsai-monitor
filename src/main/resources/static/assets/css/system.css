@@ -7,8 +7,14 @@
     height: 100%;
 }
 
+.system-card:first-child{
+    flex: 1 1 55%;
+    box-sizing: border-box;
+    align-items: stretch;
+}
+
 .system-card{
-    flex: 1 1 33%;
+    flex: 1 1 40%;
     box-sizing: border-box;
     align-items: stretch
 }

@@ -17,7 +17,7 @@ const app = createApp({
         JvmComp,
         SystemComp
     }
-})
+});
 
 app.use(ElementPlus);
 app.use(router);
