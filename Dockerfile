@@ -10,8 +10,8 @@ MAINTAINER caixibei@139.com
 # JAVA_OPTS：设置 JVM 启动参数，包括最小堆内存 128m，最大堆内存为 256m，以及使用 /dev/urandom 作为熵源：
 # ENV JAVA_OPTS="-Xms128m -Xmx256m -Djava.security.egd=file:/dev/./urandom"
 # ENV JAVA_OPTS="-Xms128m -Xmx256m"
-ENV TZ=Asia/Shanghai
-ENV LANG C.UTF-8
+# ENV TZ=Asia/Shanghai
+# ENV LANG C.UTF-8
 
 # 创建符号链接将时区信息链接到 /etc/localtime，并写入时区信息到 /etc/timezone 文件
 RUN ln -sf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
