@@ -17,7 +17,7 @@
             <img src="assets/image/logo.jpg">
         </div>
         <div>
-            <el-menu :default-active="/jvm.html" class="index-menu" mode="horizontal" :ellipsis="false">
+            <el-menu default-active="/jvm/" class="index-menu" mode="horizontal" :ellipsis="false" router>
                 <el-sub-menu index="1">
                     <template #title>网络监控</template>
                     <el-menu-item index="1-1">网络接口监控</el-menu-item>
@@ -25,7 +25,7 @@
                 </el-sub-menu>
                 <el-sub-menu index="2">
                     <template #title>JVM 监控</template>
-                    <el-menu-item index="2-1">JVM运行监控</el-menu-item>
+                    <el-menu-item index="/jvm/">JVM运行监控</el-menu-item>
                     <el-menu-item index="2-2">JVM内存监控</el-menu-item>
                 </el-sub-menu>
                 <el-sub-menu index="3">
@@ -49,7 +49,7 @@
         </div>
     </div>
     <div class="index-body">
-        <route-view/>
+        <router-view/>
     </div>
     <div class="index-footer">
         <div>站点介绍 | XX业态 | XX历程 | 加入我们 | 联系我们</div>
@@ -60,6 +60,5 @@
 </body>
 <link rel="stylesheet" href="assets/css/index.css"/>
 <script src="assets/js/jvm.js"></script>
-<script src="assets/js/router.js"></script>
 <script src="assets/js/index.js"></script>
 </html>
