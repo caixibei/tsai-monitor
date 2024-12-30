@@ -1,6 +1,65 @@
-<html>
-<body>
-<h1>hello word!!!</h1>
-<p>this is a html page</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+    <title>TSAI Monitor</title>
+    <link rel="icon" href="assets/image/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="commons/css/element-plus.css"/>
+    <script src="commons/js/vue3.js"></script>
+    <script src="commons/js/element-plus.js"></script>
+    <script src="commons/js/vue-router.js"></script>
+</head>
+<body id="app">
+<div class="index-container">
+    <div class="index-header">
+        <div class="index-header_image">
+            <img src="assets/image/logo.jpg">
+        </div>
+        <div>
+            <el-menu :default-active="/jvm.html" class="index-menu" mode="horizontal" :ellipsis="false">
+                <el-sub-menu index="1">
+                    <template #title>网络监控</template>
+                    <el-menu-item index="1-1">网络接口监控</el-menu-item>
+                    <el-menu-item index="1-2">IP监控</el-menu-item>
+                </el-sub-menu>
+                <el-sub-menu index="2">
+                    <template #title>JVM 监控</template>
+                    <el-menu-item index="2-1">JVM运行监控</el-menu-item>
+                    <el-menu-item index="2-2">JVM内存监控</el-menu-item>
+                </el-sub-menu>
+                <el-sub-menu index="3">
+                    <template #title>系统监控</template>
+                    <el-menu-item index="3-5">操作系统信息</el-menu-item>
+                    <el-menu-item index="3-3">显示器信息</el-menu-item>
+                    <el-menu-item index="3-4">CPU信息</el-menu-item>
+                    <el-menu-item index="3-6">进程监控</el-menu-item>
+                    <el-menu-item index="3-7">传感器信息</el-menu-item>
+                    <el-menu-item index="3-8">系统服务信息</el-menu-item>
+                    <el-menu-item index="3-9">电源信息</el-menu-item>
+                    <el-menu-item index="3-10">磁盘监控</el-menu-item>
+                    <el-menu-item index="3-11">系统监控</el-menu-item>
+                    <el-menu-item index="3-12">逻辑卷组信息</el-menu-item>
+                    <el-menu-item index="3-13">文件系统信息</el-menu-item>
+                    <el-menu-item index="3-14">USB设备信息</el-menu-item>
+                    <el-menu-item index="3-15">显卡信息</el-menu-item>
+                    <el-menu-item index="3-16">声卡信息</el-menu-item>
+                </el-sub-menu>
+            </el-menu>
+        </div>
+    </div>
+    <div class="index-body">
+        <route-view/>
+    </div>
+    <div class="index-footer">
+        <div>站点介绍 | XX业态 | XX历程 | 加入我们 | 联系我们</div>
+        <div>Copyright 2024-2025 tsai.com 南京xxxxx管理有限公司 版权所有</div>
+        <div>京公网安备: 000000000000000000号 | 京ICP备000000000号-0 | 营业执照 | 投诉举报电话：000-0000000</div>
+    </div>
+</div>
 </body>
+<link rel="stylesheet" href="assets/css/index.css"/>
+<script src="assets/js/jvm.js"></script>
+<script src="assets/js/router.js"></script>
+<script src="assets/js/index.js"></script>
 </html>
