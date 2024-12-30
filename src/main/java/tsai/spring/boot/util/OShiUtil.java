@@ -698,12 +698,12 @@ public class OShiUtil {
         serverSysInfo.put("userHome", properties.getProperty("user.home"));
         // 当前操作系统的用户名
         serverSysInfo.put("userName", properties.getProperty("user.name"));
-        // fixme 用户变量（容器环境无访问权限）
-        //serverSysInfo.put("userVariant", properties.getProperty("user.variant"));
-        // fixme 用户的时区，Asia/Shanghai 表示上海时区（容器环境无访问权限）
-        //serverSysInfo.put("userTimezone", properties.getProperty("user.timezone"));
-        // fixme 用户的语言设置，zh 表示中文（容器环境无访问权限）
-        //serverSysInfo.put("userLanguage", properties.getProperty("user.language"));
+        // 用户变量（容器环境无访问权限）
+        serverSysInfo.put("userVariant", getSystemProperty("user.variant"));
+        // 用户的时区，Asia/Shanghai 表示上海时区（容器环境无访问权限）
+        serverSysInfo.put("userTimezone", getSystemProperty("user.timezone"));
+        // 用户的语言设置，zh 表示中文（容器环境无访问权限）
+        serverSysInfo.put("userLanguage", getSystemProperty ("user.language"));
         /*
         * 系统环境变量
         * USERDOMAIN_ROAMINGPROFILE：表示用户的域名；
@@ -734,5 +734,21 @@ public class OShiUtil {
         */
         serverSysInfo.put("sysEnv", System.getenv());
         return serverSysInfo;
+    }
+
+    /**
+     * 针对部分容器环境，对系统的属性无权访问
+     * @param key 键
+     * @return {@link Object}
+     */
+    protected static Object getSystemProperty(String key){
+        Object val;
+        Properties properties = System.getProperties();
+        try{
+            val = properties.getProperty(key);
+        }catch (Exception e){
+            val = "无访问权限";
+        }
+        return val;
     }
 }
