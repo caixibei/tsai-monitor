@@ -7,10 +7,43 @@ const systemHtml = `
         </div>
       </template>
        <el-descriptions
-          :column="3"
+          :column="1"
           size="small"
           border
         >
+         <el-descriptions-item>
+           <template #label>
+             <div class="cell-item">
+               <el-icon :style="iconStyle">
+                 <user />
+               </el-icon>
+               操作系统名称
+             </div>
+           </template>
+           kooriookami
+         </el-descriptions-item>
+         <el-descriptions-item>
+           <template #label>
+             <div class="cell-item">
+               <el-icon :style="iconStyle">
+                 <user />
+               </el-icon>
+               操作系统名称
+             </div>
+           </template>
+           kooriookami
+         </el-descriptions-item>
+         <el-descriptions-item>
+           <template #label>
+             <div class="cell-item">
+               <el-icon :style="iconStyle">
+                 <user />
+               </el-icon>
+               操作系统名称
+             </div>
+           </template>
+           kooriookami
+         </el-descriptions-item>
          <el-descriptions-item>
            <template #label>
              <div class="cell-item">

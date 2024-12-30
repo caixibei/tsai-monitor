@@ -40,4 +40,11 @@ public class OShiController {
         return processInfo;
     }
 
+    @GetMapping(value = "/getSystemInfo")
+    public Map<String,Object> getSystemInfo(){
+        Map<String, Object> systemInfo = OShiUtil.getSystemInfo();
+        log.info("===========> process information::{}", systemInfo);
+        return systemInfo;
+    }
+
 }

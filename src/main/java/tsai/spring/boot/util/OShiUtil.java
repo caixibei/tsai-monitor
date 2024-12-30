@@ -686,25 +686,52 @@ public class OShiUtil {
     public static Map<String,Object> getSystemInfo(){
         Map<String,Object> serverSysInfo = new ConcurrentHashMap<>();
         Properties properties = System.getProperties();
-        /* 操作系统名称 */
+        // 操作系统名称
         serverSysInfo.put("osName", properties.getProperty("os.name"));
-        /* 操作系统版本 */
+        // 操作系统的版本号
         serverSysInfo.put("osVersion", properties.getProperty("os.version"));
-        /* 操作系统架构 */
+        // 操作系统架构
         serverSysInfo.put("osArch", properties.getProperty("os.arch"));
-        /* 应用所在目录 */
+        // 用户的工作目录路径
         serverSysInfo.put("userDir", properties.getProperty("user.dir"));
-        /* 当前用户主目录 */
+        // 用户的主目录路径
         serverSysInfo.put("userHome", properties.getProperty("user.home"));
-        /* 用户名 */
+        // 当前操作系统的用户名
         serverSysInfo.put("userName", properties.getProperty("user.name"));
-        /* 用户变量 */
+        // 用户变量
         serverSysInfo.put("userVariant", properties.getProperty("user.variant"));
-        /* 用户时区 */
+        // 用户的时区，Asia/Shanghai 表示上海时区
         serverSysInfo.put("userTimezone", properties.getProperty("user.timezone"));
-        /* 用户语言 */
+        // 用户的语言设置，zh 表示中文
         serverSysInfo.put("userLanguage", properties.getProperty("user.language"));
-        /* 系统环境变量 */
+        /*
+        * 系统环境变量
+        * USERDOMAIN_ROAMINGPROFILE：表示用户的域名；
+        * PROCESSOR_LEVEL： 处理器级别；
+        * SESSIONNAME： 当前会话的名称，Console 表示是本地控制台会话；
+        * JAVA_HOME： Java安装目录路径；
+        * MAVEN_HOME：Maven安装目录；
+        * PATH：系统的PATH环境变量，包含了可以被执行的命令或程序的路径；
+        * TNS_ADMIN：Oracle的网络配置文件路径，表示Oracle连接配置的路径；
+        * ORACLE_HOME：Oracle客户端的安装路径；
+        * ANDROID_SDK_ROOT：Android SDK的安装路径，表示Android开发环境的路径；
+        * TEMP/TMP：临时文件的存放路径，用于存储临时数据；
+        * CLASSPATH：Java类路径，表示在执行Java应用程序时需要的类文件位置；
+        * OS：操作系统类型，Windows_NT 表示Windows操作系统；
+        * COMPUTERNAME：计算机名，表示计算机的名称；
+        * NUMBER_OF_PROCESSORS：处理器的核心数，8 表示有8个处理器核心；
+        * LOGONSERVER：登录服务器，表示域登录的服务器；
+        * PUBLIC：公共文件目录；
+        * NVM_HOME：Node Version Manager的安装路径；
+        * ZES_ENABLE_SYSMAN：ZES系统管理工具的启用状态，值为1表示启用；
+        * CLION_VM_OPTIONS：表示CLion的虚拟机配置文件路径；
+        * SVN_EXPERIMENTAL_COMMANDS：SVN（Subversion）的实验性命令设置，值为shelf2；
+        * IDEA_VM_OPTIONS：表示IntelliJ IDEA的虚拟机配置文件路径；
+        * PYCHARM_VM_OPTIONS：表示PyCharm的虚拟机配置文件路径；
+        * HOMEPATH/HOMEDRIVE：用户主目录的路径；
+        * ProgramFiles：64位程序的安装目录；
+        * APPDATA：用户的应用数据目录，存储应用程序的配置文件和数据；
+        */
         serverSysInfo.put("sysEnv", System.getenv());
         return serverSysInfo;
     }
