@@ -4,3 +4,7 @@ server:
 spring:
   application:
     name: ${APPLICATION_NAME:tsai-monitor}
+  security:
+    user:
+      name: ${NAME:admin}
+      password: ${PASSWORD:123456}
