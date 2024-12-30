@@ -32,5 +32,5 @@ COPY ./target/tsai-monitor-${VERSION}.jar /tsai-monitor
 
 # 容器启动时命令，先休眠 30s ，然后使用指定的JVM参数运行 tsai-monitor-1.1.0.jar
 # CMD sleep 30;java $JAVA_OPTS -jar /tsai-monitor/tsai-monitor-1.1.0.jar
-ENTRYPOINT ["sh", "-c","java $JAVA_OPTS ","-jar","/tsai-monitor/tsai-monitor-${VERSION}.jar"]
+ENTRYPOINT ["sh", "-c","java $JAVA_OPTS -jar /tsai-monitor/tsai-monitor-${VERSION}.jar"]
 
