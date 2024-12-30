@@ -698,12 +698,12 @@ public class OShiUtil {
         serverSysInfo.put("userHome", properties.getProperty("user.home"));
         // 当前操作系统的用户名
         serverSysInfo.put("userName", properties.getProperty("user.name"));
-        // 用户变量
-        serverSysInfo.put("userVariant", properties.getProperty("user.variant"));
-        // 用户的时区，Asia/Shanghai 表示上海时区
-        serverSysInfo.put("userTimezone", properties.getProperty("user.timezone"));
-        // 用户的语言设置，zh 表示中文
-        serverSysInfo.put("userLanguage", properties.getProperty("user.language"));
+        // fixme 用户变量（容器环境无访问权限）
+        //serverSysInfo.put("userVariant", properties.getProperty("user.variant"));
+        // fixme 用户的时区，Asia/Shanghai 表示上海时区（容器环境无访问权限）
+        //serverSysInfo.put("userTimezone", properties.getProperty("user.timezone"));
+        // fixme 用户的语言设置，zh 表示中文（容器环境无访问权限）
+        //serverSysInfo.put("userLanguage", properties.getProperty("user.language"));
         /*
         * 系统环境变量
         * USERDOMAIN_ROAMINGPROFILE：表示用户的域名；
