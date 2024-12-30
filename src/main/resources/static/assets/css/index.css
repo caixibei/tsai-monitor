@@ -1,3 +1,7 @@
+[v-cloak] {
+    display: none !important;
+}
+
 body {
     height: 100vh;
     width: 100vw;
@@ -47,7 +51,7 @@ body {
     background: #fff;
     border-radius: 4px;
     flex: 1 1 calc(60% - 20px);
-    padding: 0 5px;
+    padding: 8px 5px;
 }
 
 .index-footer {

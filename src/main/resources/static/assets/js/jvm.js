@@ -1,5 +1,3 @@
-const {ref} = Vue;
-
 const JvmComp = {
     template: `<div>{{msg}}</div>`,
     setup() {

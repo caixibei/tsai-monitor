@@ -1,0 +1,14 @@
+.system-info{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    flex: 1;
+    align-items: stretch;
+    height: 100%;
+}
+
+.system-card{
+    flex: 1 1 33%;
+    box-sizing: border-box;
+    align-items: stretch
+}

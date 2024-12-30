@@ -385,7 +385,6 @@ public class OShiUtil {
             powerSourceMap.put("powerUsageRate", powerSource.getPowerUsageRate());
             powerSourceMap.put("designCapacity", powerSource.getDesignCapacity());
             powerSourceMap.put("maxCapacity", powerSource.getMaxCapacity());
-            // powerSourceMap.put("manufactureDate", powerSource.getManufactureDate());
             powerSourceMap.put("temperature", powerSource.getTemperature());
             powerSourceMap.put("isDischarging", powerSource.isDischarging());
             powerSourceMap.put("isCharging", powerSource.isCharging());
@@ -407,7 +406,6 @@ public class OShiUtil {
     public static List<Map<String, Object>> getSystemServiceInfo() {
         final List<OSService> services = operatingSystem.getServices();
         final List<Map<String, Object>> systemServiceList = new ArrayList<>(services.size());
-
         for (int i = 0; i < services.size(); i++) {
             final OSService osService = services.get(i);
             final Map<String, Object> osServiceMap = new ConcurrentHashMap<>();
@@ -440,16 +438,15 @@ public class OShiUtil {
      * @return {@link Map}
      */
     public static Map<String, Object> getProcessesInfo() {
-        final GlobalMemory globalMemory = hal.getMemory();
-        final Map<String, Object> processesInfoMap = new ConcurrentHashMap<>();
+        GlobalMemory globalMemory = hal.getMemory();
+        Map<String, Object> processesInfoMap = new ConcurrentHashMap<>();
         processesInfoMap.put("processCount", operatingSystem.getProcessCount());
         processesInfoMap.put("threadCount", operatingSystem.getThreadCount());
-
         List<OSProcess> osProcessList = operatingSystem.getProcesses(OperatingSystem.ProcessFiltering.ALL_PROCESSES, OperatingSystem.ProcessSorting.CPU_DESC, 100);
-        final List<Map<String, Object>> osProcessMapList = new ArrayList<>(osProcessList.size());
+        List<Map<String, Object>> osProcessMapList = new ArrayList<>(osProcessList.size());
         for (int i = 0; i < osProcessList.size(); i++) {
-            final OSProcess osProcess = osProcessList.get(i);
-            final Map<String, Object> osProcessMap = new ConcurrentHashMap<>();
+            OSProcess osProcess = osProcessList.get(i);
+            Map<String, Object> osProcessMap = new ConcurrentHashMap<>();
             osProcessMap.put("index", i);
             osProcessMap.put("toString", String.valueOf(osProcess));
             osProcessMap.put("pid", osProcess.getProcessID());
@@ -464,7 +461,7 @@ public class OShiUtil {
             osProcessMap.put("hardOpenFileLimit", osProcess.getHardOpenFileLimit());
             osProcessMap.put("processCpuLoadCumulative", osProcess.getProcessCpuLoadCumulative());
             osProcessMap.put("processCpuLoadBetweenTicks", osProcess.getProcessCpuLoadBetweenTicks(osProcess));
-            osProcessMap.put("bitness", osProcess.getBitness());
+            osProcessMap.put("bitNess", osProcess.getBitness());
             osProcessMap.put("affinityMask", osProcess.getAffinityMask());
             osProcessMap.put("minorFaults", osProcess.getMinorFaults());
             osProcessMap.put("majorFaults", osProcess.getMajorFaults());

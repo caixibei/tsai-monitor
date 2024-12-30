@@ -9,16 +9,22 @@
     <script src="commons/js/vue3.js"></script>
     <script src="commons/js/element-plus.js"></script>
     <script src="commons/js/vue-router.js"></script>
+    <script src="commons/js/axios.js"></script>
 </head>
 <body id="app">
 <div class="index-container">
+    <div style="width: calc(90% + 10px)">
+        <el-alert title="部分功能尚在开发中，敬请期待!" type="warning" show-icon></el-alert>
+    </div>
     <div class="index-header">
         <div class="index-header_image">
             <img src="assets/image/logo.jpg">
         </div>
         <div>
-            <el-menu default-active="/jvm/" class="index-menu" mode="horizontal" :ellipsis="false" router>
-                <el-sub-menu index="1">
+            <el-menu default-active="/" class="index-menu" mode="horizontal" :ellipsis="false" router>
+                <el-menu-item index="3-3">帮助</el-menu-item>
+                <!--暂不支持更多功能-->
+                <!--<el-sub-menu index="1">
                     <template #title>网络监控</template>
                     <el-menu-item index="1-1">网络接口监控</el-menu-item>
                     <el-menu-item index="1-2">IP监控</el-menu-item>
@@ -30,7 +36,7 @@
                 </el-sub-menu>
                 <el-sub-menu index="3">
                     <template #title>系统监控</template>
-                    <el-menu-item index="3-5">操作系统信息</el-menu-item>
+                    <el-menu-item index="/system/">操作系统信息</el-menu-item>
                     <el-menu-item index="3-3">显示器信息</el-menu-item>
                     <el-menu-item index="3-4">CPU信息</el-menu-item>
                     <el-menu-item index="3-6">进程监控</el-menu-item>
@@ -44,7 +50,7 @@
                     <el-menu-item index="3-14">USB设备信息</el-menu-item>
                     <el-menu-item index="3-15">显卡信息</el-menu-item>
                     <el-menu-item index="3-16">声卡信息</el-menu-item>
-                </el-sub-menu>
+                </el-sub-menu>-->
             </el-menu>
         </div>
     </div>
@@ -53,12 +59,14 @@
     </div>
     <div class="index-footer">
         <div>站点介绍 | XX业态 | XX历程 | 加入我们 | 联系我们</div>
-        <div>Copyright 2024-2025 tsai.com 南京xxxxx管理有限公司 版权所有</div>
+        <div>Copyright 2024-2025 www.tsai.com 南京xxxxx管理有限公司 版权所有</div>
         <div>京公网安备: 000000000000000000号 | 京ICP备000000000号-0 | 营业执照 | 投诉举报电话：000-0000000</div>
     </div>
 </div>
 </body>
 <link rel="stylesheet" href="assets/css/index.css"/>
+<link rel="stylesheet" href="assets/css/system.css"/>
 <script src="assets/js/jvm.js"></script>
+<script src="assets/js/system.js"></script>
 <script src="assets/js/index.js"></script>
 </html>
