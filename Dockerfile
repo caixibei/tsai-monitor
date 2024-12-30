@@ -17,13 +17,13 @@ ENV LANG C.UTF-8
 RUN ln -sf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # 创建目录 /tsai-monitor
-RUN mkdir -p "/tsai-monitor"
+RUN mkdir -p /tsai-monitor
 
 # 设置工作目录为 /tsai-monitor
 WORKDIR /tsai-monitor
 
 # 将当前目录下的 jar 包 文件添加到容器的 /tsai-monitor 目录下
-ADD ./tsai-monitor-1.1.0.jar /tsai-monitor
+COPY target/tsai-monitor-1.1.0.jar /tsai-monitor
 
 # 容器启动时命令，先休眠 30s ，然后使用指定的JVM参数运行 tsai-monitor-1.1.0.jar
 # CMD sleep 30;java $JAVA_OPTS -jar /tsai-monitor/tsai-monitor-1.1.0.jar

@@ -1,4 +1,4 @@
-version: "3"
+version: "3.8"
 services:
 
   # 定义一个名为 tsai-monitor 的服务
@@ -14,7 +14,7 @@ services:
       # 指定构建该服务的上下文路径，即 Dockerfile 所在的目录
       context: .
       # 指定 Dockerfile 文件路径
-      dockerfile: ./Dockerfile
+      dockerfile: Dockerfile
     # 暴露容器的端口映射，将容器的端口映射到主机端口
     ports:
       - "7162:7162"
