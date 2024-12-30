@@ -698,8 +698,8 @@ public class OShiUtil {
         serverSysInfo.put("userHome", properties.getProperty("user.home"));
         // 当前操作系统的用户名
         serverSysInfo.put("userName", properties.getProperty("user.name"));
-        // 用户变量（容器环境无访问权限）
-        serverSysInfo.put("userVariant", getSystemProperty("user.variant"));
+        // fixme 用户变量（容器环境无访问权限）
+        // serverSysInfo.put("userVariant", getSystemProperty("user.variant"));
         // 用户的时区，Asia/Shanghai 表示上海时区（容器环境无访问权限）
         serverSysInfo.put("userTimezone", getSystemProperty("user.timezone"));
         // 用户的语言设置，zh 表示中文（容器环境无访问权限）
