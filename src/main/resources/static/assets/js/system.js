@@ -174,7 +174,7 @@ const systemHtml = `
                系统环境变量
              </div>
            </template>
-           {{ systemInfo?.sysEnv?.PATH }}
+           <a @click="" :title="systemInfo?.sysEnv?.PATH">详细数据</a>
          </el-descriptions-item>
          <el-descriptions-item>
            <template #label>
