@@ -13,7 +13,7 @@ MAINTAINER caixibei@139.com
 # LANG：设置语言环境为 UTF-8
 # JAVA_OPTS：设置 JVM 启动参数，包括最小堆内存 128m，最大堆内存为 256m，以及使用 /dev/urandom 作为熵源：
 # ENV JAVA_OPTS="-Xms128m -Xmx256m -Djava.security.egd=file:/dev/./urandom"
-ENV JAVA_OPTS="-Xms256m -Xmx512m"
+ENV JAVA_OPTS="-Xms256m -Xmx512m -Djava.security.manager"
 ENV TZ=Asia/Shanghai
 ENV LANG C.UTF-8
 
@@ -32,5 +32,5 @@ COPY ./target/tsai-monitor-${VERSION}.jar /tsai-monitor
 
 # 容器启动时命令，先休眠 30s ，然后使用指定的JVM参数运行 tsai-monitor-1.1.0.jar
 # CMD sleep 30;java $JAVA_OPTS -jar /tsai-monitor/tsai-monitor-1.1.0.jar
-ENTRYPOINT ["sh", "-c","java $JAVA_OPTS -jar /tsai-monitor/tsai-monitor-${VERSION}.jar"]
+ENTRYPOINT ["sh", "-c","java -jar /tsai-monitor/tsai-monitor-${VERSION}.jar"]
 
