@@ -10,7 +10,15 @@
 .system-card {
     flex: 1 1 24%;
     box-sizing: border-box;
-    align-items: stretch
+    align-items: stretch;
+}
+
+@media(min-width:320px) and (max-width:480px){
+    .system-card {
+        flex: 1 1 100%;
+        box-sizing: border-box;
+        align-items: stretch;
+    }
 }
 
 .system-card .el-card__header{
@@ -31,11 +39,18 @@
 }
 
 .el-form-item--small{
-    margin-bottom: 2px !important;
+    margin-bottom: 8px !important;
 }
 
 .el-form-item--small .el-form-item__label{
     height: 14px;
     line-height: 14px;
     font-size: 10px;
+}
+
+.el-form-item--small .el-form-item__content{
+    height: 13px;
+    line-height: 13px;
+    font-size: 10px;
+    color: #333333;
 }
