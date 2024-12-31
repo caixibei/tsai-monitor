@@ -13,13 +13,11 @@
             <div class="index-header_image">
                 <img src="assets/image/logo.jpg">
             </div>
-            <div>
-                <el-menu default-active="/" class="index-menu" mode="horizontal" :ellipsis="false" :router="false">
-                    <el-menu-item index="3-3">
-                        <span class="iconfont tsai-bangzhuyushuoming header-helper">帮助</span>
-                    </el-menu-item>
-                </el-menu>
-            </div>
+            <el-menu default-active="/" class="index-menu" mode="horizontal" :ellipsis="false" :router="false">
+                <el-menu-item index="3-3">
+                    <span class="iconfont tsai-bangzhuyushuoming header-helper">帮助</span>
+                </el-menu-item>
+            </el-menu>
         </div>
         <div class="index-body">
             <router-view/>
