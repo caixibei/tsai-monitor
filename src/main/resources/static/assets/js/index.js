@@ -3,7 +3,6 @@ const { createRouter, createWebHashHistory } = VueRouter;
 
 const routes = [
     { path: '/', component: SystemComp },
-    { path: '/jvm/', component: JvmComp },
     { path: '/system/', component: SystemComp },
 ];
 
@@ -14,7 +13,6 @@ const router = createRouter({
 
 const app = createApp({
     components: {
-        JvmComp,
         SystemComp
     }
 });

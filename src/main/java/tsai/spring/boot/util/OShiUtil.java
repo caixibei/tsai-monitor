@@ -619,32 +619,57 @@ public class OShiUtil {
     public static Map<String, Object> getJvmInfo() {
         Properties properties = System.getProperties();
         Map<String, Object> jvmInfo = new ConcurrentHashMap<>();
+        // Java 的完整版本号
         jvmInfo.put("version", properties.getProperty("java.version"));
+        // 类文件版本号
         jvmInfo.put("classVersion", properties.getProperty("java.class.version"));
+        // JVM 的版本号
         jvmInfo.put("jvmVersion", properties.getProperty("java.vm.version"));
+        // JVM 的提供商
         jvmInfo.put("jvmVendor", properties.getProperty("java.vm.vendor"));
+        // Jvm 提供商
         jvmInfo.put("jvmVendorUrl", properties.getProperty("java.vendor.url"));
+        // Jvm 平台规范提供商
         jvmInfo.put("jvmSpecificationVendor", properties.getProperty("java.specification.vendor"));
+        // Jvm 平台规范版本
         jvmInfo.put("jvmSpecificationVersion", properties.getProperty("java.vm.specification.version"));
+        // Jvm 平台规范名称
         jvmInfo.put("jvmSpecificationName", properties.getProperty("java.vm.specification.name"));
+        // Java 平台规范版本
         jvmInfo.put("javaSpecificationVersion", properties.getProperty("java.specification.version"));
+        // Java 平台 API 规范
         jvmInfo.put("javaSpecificationName", properties.getProperty("java.specification.name"));
+        // 执行命令
         jvmInfo.put("execCommand", properties.getProperty("sun.java.command"));
+        // JVM使用的编译器，HotSpot 64-Bit Tiered Compilers为 HotSpot 的分层编译器
         jvmInfo.put("compiler", properties.getProperty("sun.management.compiler"));
+        // JVM 名称，Java HotSpot(TM) 64-Bit Server VM 是 HotSpot 64 位服务器虚拟机
         jvmInfo.put("jvmName", properties.getProperty("java.vm.name"));
+        // Jvm 模式
         jvmInfo.put("jvmMode", properties.getProperty("java.vm.info"));
+        // 架构模型
         jvmInfo.put("archDataModel", properties.getProperty("sun.arch.data.model"));
+        // Java 运行时的完整版本号
         jvmInfo.put("runtimeVersion", properties.getProperty("java.runtime.version"));
+        // 运行时环境名称
         jvmInfo.put("runtimeName", properties.getProperty("java.runtime.name"));
+        // Java 安装路径
         jvmInfo.put("home", properties.getProperty("java.home"));
+        // 获取 JVM 本地库的搜索路径
         jvmInfo.put("libPath", properties.getProperty("java.library.path").split(";"));
+        // 获取 JVM 的类路径，并按分号分隔为数组
         jvmInfo.put("classPath", properties.getProperty("java.class.path").split(";"));
+        // 获取 JVM 启动所需的库路径（即 JRE 的 bin 目录路径）
         jvmInfo.put("jreBinPath", properties.getProperty("sun.boot.library.path"));
+        // 获取 JVM 启动类路径，并按分号分隔为数组
         jvmInfo.put("bootClassPath", properties.getProperty("sun.boot.class.path").split(";"));
+        // JVM 启动器的类型
         jvmInfo.put("launcher", properties.getProperty("sun.java.launcher"));
+        // 获取扩展目录路径，并按分号分隔为数组
         jvmInfo.put("extendsDir", properties.getProperty("java.ext.dirs").split(";"));
+        // 临时文件存储目录
         jvmInfo.put("ioTmpDir", properties.getProperty("java.io.tmpdir"));
-        // 计算运行时长
+        // 启动时间
         long startTime = ManagementFactory.getRuntimeMXBean().getStartTime();
         LocalDateTime start = Instant.ofEpochMilli(startTime).atZone(ZoneOffset.ofHours(8)).toLocalDateTime();
         jvmInfo.put("startTime", start);
@@ -655,6 +680,7 @@ public class OShiUtil {
         durationInfo.put("hour", duration.toHours());
         durationInfo.put("min", duration.toMinutes());
         durationInfo.put("sec", duration.toMillis() / 1000L);
+        // 运行时长
         jvmInfo.put("duration", durationInfo);
         return jvmInfo;
     }

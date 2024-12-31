@@ -82,19 +82,31 @@ const SystemComp = {
     template: systemHtml,
     setup() {
       const systemInfo = ref({});
+      const jvmInfo = ref({});
 
       // 获取服务器系统信息
       const getSystemInfo = () => {
         get('/oshi/getSystemInfo')
           .then((res) => {
             systemInfo.value = res
-            console.log('-------->',res)
+          })
+          .catch(error => {
+            console.log(error);
+          })
+      }
+
+      const getJvmInfo = ()=>{
+        get('/oshi/getJVMInfo')
+          .then((res) => {
+            jvmInfo.value = res
+            console.log(jvmInfo.value)
           })
           .catch(error => {
             console.log(error);
           })
       }
       getSystemInfo()
+      getJvmInfo()
       return { systemInfo };
     }
 }
