@@ -13,11 +13,19 @@
     align-items: stretch;
 }
 
+.system-card .el-card__body{
+    max-height: calc(82% / 2);
+    overflow-y: auto;
+}
+
 @media(min-width:320px) and (max-width:480px){
     .system-card {
         flex: 1 1 100%;
         box-sizing: border-box;
-        align-items: stretch;
+    }
+    .system-card .el-card__body{
+        max-height: 23vh;
+        overflow-y: auto;
     }
 }
 

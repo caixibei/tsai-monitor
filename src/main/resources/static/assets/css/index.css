@@ -18,7 +18,7 @@ body,#app {
     justify-content: center;
     align-items: center;
     gap: 1%;
-    height: calc(100% - 10px);
+    height: calc(100% - 15px);
 }
 
 .index-header {
@@ -49,7 +49,7 @@ body,#app {
     width: 99%;
     background: transparent;
     border-radius: 4px;
-    flex: 1 1 calc(65% - 20px);
+    flex: 1 1 calc(65% - 10px);
     padding: 0;
 }
 
