@@ -42,7 +42,35 @@ const systemHtml = `
           <span class="iconfont tsai-JVM">JVM监控</span>
         </div>
       </template>
-       
+       <el-form :model="jvmInfo" label-width="'100px'" size="small" label-suffix=":">
+        <el-form-item v-if="jvmInfo?.startTime" label="启动时间">{{jvmInfo?.startTime}}</el-form-item>
+        <el-form-item v-if="jvmInfo?.duration" label="运行时长">
+            {{ jvmInfo?.duration?.day }} 天
+            {{ jvmInfo?.duration?.hour }} 时 
+            {{ jvmInfo?.duration?.min }} 分
+            <!--{{ jvmInfo?.duration?.sec }} 秒-->
+        </el-form-item>
+        <el-form-item v-if="jvmInfo?.version" label="Java完整版本号">{{jvmInfo?.version}}</el-form-item>
+        <el-form-item v-if="jvmInfo?.classVersion" label="类文件版本号">{{jvmInfo?.classVersion}}</el-form-item>
+        <el-form-item v-if="jvmInfo?.jvmVersion" label="JVM版本号">{{jvmInfo?.jvmVersion}}</el-form-item>
+        <el-form-item v-if="jvmInfo?.jvmVendor" label="JVM提供商">{{jvmInfo?.jvmVendor}}</el-form-item>
+        <el-form-item v-if="jvmInfo?.jvmVendorUrl" label="Jvm提供商地址">{{jvmInfo?.jvmVendorUrl}}</el-form-item>
+        <el-form-item v-if="jvmInfo?.jvmSpecificationVendor" label="Jvm 平台规范提供商">{{jvmInfo?.jvmSpecificationVendor}}</el-form-item>
+        <el-form-item v-if="jvmInfo?.jvmSpecificationVersion" label="Jvm平台规范版本">{{jvmInfo?.jvmSpecificationVersion}}</el-form-item>
+        <el-form-item v-if="jvmInfo?.jvmSpecificationName" label="Jvm平台规范名称">{{jvmInfo?.jvmSpecificationName}}</el-form-item>
+        <el-form-item v-if="jvmInfo?.javaSpecificationVersion" label="Java平台规范版本">{{jvmInfo?.javaSpecificationVersion}}</el-form-item>
+        <el-form-item v-if="jvmInfo?.javaSpecificationName" label="Java平台API规范">{{jvmInfo?.javaSpecificationName}}</el-form-item>
+        <el-form-item v-if="jvmInfo?.execCommand" label="JVM执行命令">{{jvmInfo?.execCommand}}</el-form-item>
+        <el-form-item v-if="jvmInfo?.compiler" label="JVM编译器">{{jvmInfo?.compiler}}</el-form-item>
+        <el-form-item v-if="jvmInfo?.jvmName" label="JVM名称">{{jvmInfo?.jvmName}}</el-form-item>
+        <el-form-item v-if="jvmInfo?.jvmMode" label="Jvm模式">{{jvmInfo?.jvmMode}}</el-form-item>
+        <el-form-item v-if="jvmInfo?.archDataModel" label="架构模型">{{jvmInfo?.archDataModel}}</el-form-item>
+        <el-form-item v-if="jvmInfo?.runtimeVersion" label="Java运行时完整版本号">{{jvmInfo?.runtimeVersion}}</el-form-item>
+        <el-form-item v-if="jvmInfo?.runtimeName" label="运行时环境名称">{{jvmInfo?.runtimeName}}</el-form-item>
+        <el-form-item v-if="jvmInfo?.home" label="Java安装路径">{{jvmInfo?.home}}</el-form-item>
+        <el-form-item v-if="jvmInfo?.launcher" label="JVM启动器类型">{{jvmInfo?.launcher}}</el-form-item>
+        <el-form-item v-if="jvmInfo?.ioTmpDir" label="临时文件存储目录">{{jvmInfo?.ioTmpDir}}</el-form-item>
+      </el-form>
     </el-card>
     <el-card class="system-card" size="small">
       <template #header>
@@ -107,6 +135,7 @@ const SystemComp = {
       }
       getSystemInfo()
       getJvmInfo()
-      return { systemInfo };
+      setInterval(getJvmInfo,60000);
+      return { systemInfo,jvmInfo };
     }
 }

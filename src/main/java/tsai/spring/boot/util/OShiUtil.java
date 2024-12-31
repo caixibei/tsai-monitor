@@ -1,4 +1,6 @@
 package tsai.spring.boot.util;
+import cn.hutool.core.date.DateUnit;
+import cn.hutool.core.date.DateUtil;
 import oshi.SystemInfo;
 import oshi.hardware.*;
 import oshi.software.os.*;
@@ -627,7 +629,7 @@ public class OShiUtil {
         jvmInfo.put("jvmVersion", properties.getProperty("java.vm.version"));
         // JVM 的提供商
         jvmInfo.put("jvmVendor", properties.getProperty("java.vm.vendor"));
-        // Jvm 提供商
+        // Jvm 提供商地址
         jvmInfo.put("jvmVendorUrl", properties.getProperty("java.vendor.url"));
         // Jvm 平台规范提供商
         jvmInfo.put("jvmSpecificationVendor", properties.getProperty("java.specification.vendor"));
@@ -672,14 +674,19 @@ public class OShiUtil {
         // 启动时间
         long startTime = ManagementFactory.getRuntimeMXBean().getStartTime();
         LocalDateTime start = Instant.ofEpochMilli(startTime).atZone(ZoneOffset.ofHours(8)).toLocalDateTime();
-        jvmInfo.put("startTime", start);
+        jvmInfo.put("startTime", DateUtil.formatLocalDateTime(start));
         LocalDateTime now = LocalDateTime.now();
         Duration duration = Duration.between(start, now);
+        long totalSeconds = duration.getSeconds();
+        long days = totalSeconds / (24 * 60 * 60);
+        long hours = (totalSeconds % (24 * 60 * 60)) / (60 * 60);
+        long minutes = (totalSeconds % (60 * 60)) / 60;
+        long seconds = totalSeconds % 60;
         Map<String, Object> durationInfo = new ConcurrentHashMap<>();
-        durationInfo.put("day", duration.toDays());
-        durationInfo.put("hour", duration.toHours());
-        durationInfo.put("min", duration.toMinutes());
-        durationInfo.put("sec", duration.toMillis() / 1000L);
+        durationInfo.put("day", days);
+        durationInfo.put("hour", hours);
+        durationInfo.put("min", minutes);
+        durationInfo.put("sec", seconds);
         // 运行时长
         jvmInfo.put("duration", durationInfo);
         return jvmInfo;
