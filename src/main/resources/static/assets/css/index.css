@@ -23,15 +23,15 @@ body {
 
 .index-header {
     margin: 0;
-    padding: 0 5px;
+    padding: 0;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    width: 90%;
+    width: 99%;
     background: #fff;
     border-radius: 4px;
-    flex: 0 0 5%;
+    flex: 0 0 3%;
 }
 
 .index-header_image {
@@ -42,20 +42,19 @@ body {
 }
 
 .index-header_image img {
-    width: 80%;
-    zoom: 80%;
+    zoom: 60%;
 }
 
 .index-body {
-    width: 90%;
-    background: #fff;
+    width: 99%;
+    background: transparent;
     border-radius: 4px;
-    flex: 1 1 calc(60% - 20px);
-    padding: 8px 5px;
+    flex: 1 1 calc(65% - 20px);
+    padding: 0;
 }
 
 .index-footer {
-    width: 90%;
+    width: 99%;
     background: #fff;
     border-radius: 4px;
     display: flex;
@@ -63,10 +62,10 @@ body {
     justify-content: center;
     align-items: center;
     color: #989898;
-    font-size: 0.7rem;
+    font-size: 10px;
     gap: 4px;
-    padding: 5px 5px;
-    flex: 0 0 7%;
+    padding: 3px 0;
+    flex: 0 0 5%;
 }
 
 .index-footer div {
@@ -75,4 +74,8 @@ body {
 
 .index-menu{
     border-bottom: none !important;
+}
+
+.header-helper{
+    font-size: 12px;
 }

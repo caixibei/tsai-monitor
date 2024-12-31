@@ -1,0 +1,58 @@
+{
+  "id": "4799394",
+  "name": "tsai-monitor",
+  "font_family": "iconfont",
+  "css_prefix_text": "tsai-",
+  "description": "项目地址：git@github.com:caixibei/tsai-monitor.git",
+  "glyphs": [
+    {
+      "icon_id": "3456456",
+      "name": "帮助与说明",
+      "font_class": "bangzhuyushuoming",
+      "unicode": "e70f",
+      "unicode_decimal": 59151
+    },
+    {
+      "icon_id": "1632105",
+      "name": "computer",
+      "font_class": "computer",
+      "unicode": "e602",
+      "unicode_decimal": 58882
+    },
+    {
+      "icon_id": "2420828",
+      "name": "JVM",
+      "font_class": "JVM",
+      "unicode": "e653",
+      "unicode_decimal": 58963
+    },
+    {
+      "icon_id": "10977975",
+      "name": "cpu",
+      "font_class": "cpu",
+      "unicode": "e650",
+      "unicode_decimal": 58960
+    },
+    {
+      "icon_id": "12018846",
+      "name": "服务器",
+      "font_class": "fuwuqi",
+      "unicode": "e625",
+      "unicode_decimal": 58917
+    },
+    {
+      "icon_id": "33440066",
+      "name": "电池",
+      "font_class": "dianchi",
+      "unicode": "e67c",
+      "unicode_decimal": 59004
+    },
+    {
+      "icon_id": "36761816",
+      "name": "内存使用率",
+      "font_class": "neicunshiyongshuai",
+      "unicode": "e62f",
+      "unicode_decimal": 58927
+    }
+  ]
+}
