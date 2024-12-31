@@ -6,26 +6,28 @@
     <title>TSAI Monitor</title>
     <script src="commons/js/base.js"></script>
 </head>
-<body id="app">
-<div class="index-container">
-    <div class="index-header">
-        <div class="index-header_image">
-            <img src="assets/image/logo.jpg">
+<body>
+<div id="app">
+    <div class="index-container">
+        <div class="index-header">
+            <div class="index-header_image">
+                <img src="assets/image/logo.jpg">
+            </div>
+            <div>
+                <el-menu default-active="/" class="index-menu" mode="horizontal" :ellipsis="false" :router="false">
+                    <el-menu-item index="3-3">
+                        <span class="iconfont tsai-bangzhuyushuoming header-helper">帮助</span>
+                    </el-menu-item>
+                </el-menu>
+            </div>
         </div>
-        <div>
-            <el-menu default-active="/" class="index-menu" mode="horizontal" :ellipsis="false" :router="false">
-                <el-menu-item index="3-3">
-                    <span class="iconfont tsai-bangzhuyushuoming header-helper">帮助</span>
-                </el-menu-item>
-            </el-menu>
+        <div class="index-body">
+            <router-view/>
         </div>
-    </div>
-    <div class="index-body">
-        <router-view/>
-    </div>
-    <div class="index-footer">
-        <div>Copyright 2024-2025 www.tsai.com xxxxx科技有限公司 版权所有</div>
-        <div>京公网安备: 000000000000000000号 | 京ICP备000000000号-0 | 营业执照 | 投诉举报电话：000-0000000</div>
+        <div class="index-footer">
+            <div>Copyright 2024-2025 www.tsai.com xxxxx科技有限公司 版权所有</div>
+            <div>京公网安备: 000000000000000000号 | 京ICP备000000000号-0 | 营业执照 | 投诉举报电话：000-0000000</div>
+        </div>
     </div>
 </div>
 </body>

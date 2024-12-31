@@ -25,3 +25,17 @@
     line-height: 12px;
     color: #3D3D3D;
 }
+
+.el-card__body{
+    padding: 8px !important;
+}
+
+.el-form-item--small{
+    margin-bottom: 2px !important;
+}
+
+.el-form-item--small .el-form-item__label{
+    height: 14px;
+    line-height: 14px;
+    font-size: 10px;
+}

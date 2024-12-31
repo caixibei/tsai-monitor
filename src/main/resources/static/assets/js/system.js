@@ -6,7 +6,11 @@ const systemHtml = `
           <span class="iconfont tsai-computer">系统信息</span>
         </div>
       </template>
-       
+      <el-form :model="systemInfo" label-width="auto" size="small" label-suffix=":">
+        <el-form-item label="操作系统名称"></el-form-item>
+        <el-form-item label="操作系统名称"></el-form-item>
+        <el-form-item label="操作系统名称"></el-form-item>
+      </el-form>
     </el-card>
     <el-card class="system-card" size="small">
       <template #header>
