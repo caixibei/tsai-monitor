@@ -522,31 +522,52 @@ public class OShiUtil {
     public static Map<String, Object> getMemoryInfo() {
         GlobalMemory globalMemory = hal.getMemory();
         Map<String, Object> gmMap = new ConcurrentHashMap<>();
+        // 系统总运行内存的大小，可以转换成可读的字节数（GB、MB）
         gmMap.put("total", FormatUtil.formatBytes(globalMemory.getTotal()));
+        // 系统可用运行内存的大小，可以转换成可读的字节数（GB、MB）
         gmMap.put("available", FormatUtil.formatBytes(globalMemory.getAvailable()));
+        // 系统已用内存大小，可以转换成可读的字节数（GB、MB）
         gmMap.put("used", FormatUtil.formatBytes(globalMemory.getTotal() - globalMemory.getAvailable()));
+        // 系统内存的使用率，表示已用内存占总内存的比例，计算方式： (总内存 - 可用内存) / 总内存 * 100
         gmMap.put("usageRate", 100d * (globalMemory.getTotal() - globalMemory.getAvailable()) / globalMemory.getTotal());
-        gmMap.put("usageRateTime", DateUtil.format(LocalDateTime.now(), "mm:ss"));
+        // 当前时间的格式化表示，格式为“mm:ss”，代表当前内存使用率的时间戳
+        gmMap.put("usageRateTime", DateUtil.format(LocalDateTime.now(), "HH:mm"));
+        // 内存页面大小，即操作系统管理内存的基本单元大小
         gmMap.put("pageSize", globalMemory.getPageSize());
+        // 虚拟内存的详细信息
         VirtualMemory virtualMemory = globalMemory.getVirtualMemory();
         Map<String, Object> vmMap = new ConcurrentHashMap<>();
+        // 虚拟内存的字符串表示
         vmMap.put("toString", virtualMemory);
+        // 虚拟内存交换空间的总大小，格式化为可读的字节数
         vmMap.put("swapTotal", FormatUtil.formatBytes(virtualMemory.getSwapTotal()));
+        // 当前已使用的交换空间，格式化为可读的字节数
         vmMap.put("swapUsed", FormatUtil.formatBytes(virtualMemory.getSwapUsed()));
+        // 交换空间的使用率，计算方式为 (已使用的交换空间 / 交换空间总大小) * 100
         vmMap.put("swapUsageRate", 100d * virtualMemory.getSwapUsed() / virtualMemory.getSwapTotal());
+        // 虚拟内存的最大大小，格式化为可读的字节数
         vmMap.put("virtualMax", FormatUtil.formatBytes(virtualMemory.getVirtualMax()));
+        // 当前已使用的虚拟内存大小，格式化为可读的字节数
         vmMap.put("virtualInUse", FormatUtil.formatBytes(virtualMemory.getVirtualInUse()));
+        // 虚拟内存的使用率，计算方式为 (已使用的虚拟内存 / 虚拟内存最大值) * 100
         vmMap.put("virtualUsageRate", 100d * virtualMemory.getVirtualInUse() / virtualMemory.getVirtualMax());
         gmMap.put("virtualMemory", vmMap);
+        // 物理内存的详细信息列表
         List<PhysicalMemory> physicalMemoryList = globalMemory.getPhysicalMemory();
         List<Map<String, Object>> pmInfoList = new ArrayList<>(physicalMemoryList.size());
         for (PhysicalMemory pm : physicalMemoryList) {
             Map<String, Object> pmMap = new ConcurrentHashMap<>();
+            // 物理内存的字符串表示
             pmMap.put("toString", String.valueOf(pm));
+            // 物理内存模块的银行标签（例如：DIMM槽编号）
             pmMap.put("bankLabel", pm.getBankLabel());
+            // 内存制造商的名称
             pmMap.put("manufacturer", pm.getManufacturer());
+            // 物理内存模块的大小，格式化为可读的字节数
             pmMap.put("capacity", FormatUtil.formatBytes(pm.getCapacity()));
+            // 内存类型（如DDR4、DDR3等）
             pmMap.put("memoryType", pm.getMemoryType());
+            // 内存的时钟频率，格式化为赫兹（Hz）
             pmMap.put("clockSpeed", FormatUtil.formatHertz(pm.getClockSpeed()));
             pmInfoList.add(pmMap);
         }

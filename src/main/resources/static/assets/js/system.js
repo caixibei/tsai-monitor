@@ -113,247 +113,281 @@ const systemHtml = `
 `
 
 const SystemComp = {
-    template: systemHtml,
-    setup() {
-      const systemInfo = ref({});
-      const jvmInfo = ref({});
-      const powerInfo = ref({});
-      const memoryInfo = ref({});
-      const usageRateArray = ref([]);
-      const usageRateTimeArray = ref([]);
-      const maxLength = 10;
-      const powerLineOption = ref({});
-      const powerLineChart = ref();
+  template: systemHtml,
+  setup() {
+    const systemInfo = ref({});
+    const jvmInfo = ref({});
+    const powerInfo = ref({});
+    const memoryInfo = ref({});
+    const usageRateArray = ref([]);
+    const usageRateTimeArray = ref([]);
+    const maxLength = 15;
+    const powerLineOption = ref({});
+    const powerLineChart = ref();
 
-      // 获取服务器系统信息
-      const getSystemInfo = () => {
-        get('/oshi/getSystemInfo')
-          .then((res) => {
-            systemInfo.value = res
-          })
-          .catch(error => {
-            console.log(error);
-          })
+    // 获取服务器系统信息
+    const getSystemInfo = () => {
+      get('/oshi/getSystemInfo')
+        .then((res) => {
+          systemInfo.value = res
+        })
+        .catch(error => {
+          console.log(error);
+        })
+    }
+
+    // 获取 JVM 信息
+    const getJvmInfo = () => {
+      get('/oshi/getJVMInfo')
+        .then((res) => {
+          jvmInfo.value = res
+        })
+        .catch(error => {
+          console.log(error);
+        })
+    }
+
+    // 获取电源信息（！虚拟机不支持电源信息！）
+    const getPowerSourceInfo = () => {
+      get('/oshi/getPowerSourceInfo')
+        .then((res) => {
+          powerInfo.value = res[0]
+        })
+        .catch(error => {
+          console.log(error);
+        })
+    }
+
+    const getMemoryInfo = () => {
+      get('/oshi/getMemoryInfo')
+        .then((res) => {
+          memoryInfo.value = res
+          updateUsageRateArray()
+        })
+        .catch(error => {
+          console.log(error);
+        })
+    }
+
+    onMounted(() => {
+      initCharts();
+      getMemoryInfo()
+      setInterval(getMemoryInfo, 60000);
+      getSystemInfo()
+      setInterval(function () {
+        getJvmInfo()
+      }, 1000);
+    });
+
+    const updateUsageRateArray = () => {
+      const data = memoryInfo.value;
+      const usageRate = data?.usageRate;
+      const usageRateTime = data?.usageRateTime;
+      if (usageRateArray.value?.length >= maxLength
+        && usageRateTimeArray.value?.length >= maxLength) {
+        usageRateArray.value?.shift();
+        usageRateTimeArray.value?.shift();
       }
-
-      // 获取 JVM 信息
-      const getJvmInfo = ()=>{
-        get('/oshi/getJVMInfo')
-          .then((res) => {
-            jvmInfo.value = res
-          })
-          .catch(error => {
-            console.log(error);
-          })
-      }
-
-      // 获取电源信息（！虚拟机不支持电源信息！）
-      const getPowerSourceInfo = () => {
-        get('/oshi/getPowerSourceInfo')
-          .then((res) => {
-            powerInfo.value = res[0]
-          })
-          .catch(error => {
-            console.log(error);
-          })
-      }
-
-      const getMemoryInfo = () => {
-        get('/oshi/getMemoryInfo')
-          .then((res) => {
-            memoryInfo.value = res
-            updateUsageRateArray()
-          })
-          .catch(error => {
-            console.log(error);
-          })
-      }
-
-      onMounted(()=>{
-        initCharts();
-        setInterval(getMemoryInfo, 3000);
-        getSystemInfo()
-        setInterval(function () {
-          getJvmInfo()
-        },1000);
-      });
-
-      const updateUsageRateArray = () => {
-        const data = memoryInfo.value;
-        const usageRate = data?.usageRate;
-        const usageRateTime = data?.usageRateTime;
-        if (usageRateArray.value?.length >= maxLength
-            && usageRateTimeArray.value?.length >= maxLength) {
-          usageRateArray.value?.shift();
-          usageRateTimeArray.value?.shift();
-        }
-        usageRateArray.value?.push(usageRate);
-        usageRateTimeArray.value?.push(usageRateTime);
-        powerLineOption.value = {
-          xAxis: {
-            type: 'category',
-            data: usageRateTimeArray.value,
-            name: '时间',
-            nameLocation: 'end',
-            nameRotate: '0',
-            axisTick: {
-              show: false,
-            },
-            nameTextStyle: {
-              color: '#4D4D4D',
-              fontSize: 8,
-              padding: [5,0,0,-28],
-              verticalAlign: 'top'
-            },
-            axisLine:{
-              lineStyle:{
-                color: '#4D4D4D',           // 坐标轴的颜色
-                width: 1.3                  // 坐标轴的宽度,可以去掉
-              }
-            },
-            splitLine: {
-              show: false,                 // 是否显示网格线
-              lineStyle: {
-                type: 'dashed',            // 显示网格线的样式
-                color: '#DCDFE5'           // 显示网格线的颜色
-              }
-            },
-            axisLabel: {
-              show: true,                 // 是否显示刻度标签
-              interval: 0,                // 坐标轴刻度标签的显示间隔，在类目轴中有效.0显示所有
-              inside: false,               // 刻度标签是否朝内，默认朝外
-              rotate: 30,                  // 刻度标签旋转的角度，在类目轴的类目标签显示不下的时候可以通过旋转防止标签之间重叠；旋转的角度从 -90 度到 90 度
-              margin: -3,                  // 刻度标签与轴线之间的距离
-              color: '#4D4D4D',           // 刻度标签文字的颜色
-              fontStyle: 'normal',        // 文字字体的风格（'normal'，无样式；'italic'，斜体；'oblique'，倾斜字体）
-              fontWeight: 'normal',       // 文字字体的粗细（'normal'，无样式；'bold'，加粗；'bolder'，加粗的基础上再加粗；'lighter'，变细；数字定义粗细也可以，取值范围100至700）
-              fontSize: 12,               // 文字字体大小
-              align: 'center',            // 文字水平对齐方式，默认自动（'left'，'center'，'right'）
-              verticalAlign: 'middle',    // 文字垂直对齐方式，默认自动（'top'，'middle'，'bottom'
-              lineHeight: '12',           // 行高
-              //backgroundColor: 'red',   // 文字块背景色，例：'#123234', 'red', 'rgba(0,23,11,0.3)'
-              textStyle: {
-                fontSize: 10,
-              },
+      usageRateArray.value?.push(usageRate);
+      usageRateTimeArray.value?.push(usageRateTime);
+      powerLineOption.value = {
+        xAxis: {
+          type: 'category',
+          data: usageRateTimeArray.value,
+          name: '时间',
+          nameLocation: 'end',
+          nameRotate: '0',
+          axisTick: {
+            show: false,
+          },
+          nameTextStyle: {
+            color: '#4D4D4D',
+            fontSize: 8,
+            padding: [5, 0, 0, -28],
+            verticalAlign: 'top'
+          },
+          axisLine: {
+            lineStyle: {
+              color: '#4D4D4D',           // 坐标轴的颜色
+              width: 1.3                  // 坐标轴的宽度,可以去掉
+            }
+          },
+          splitLine: {
+            show: false,                 // 是否显示网格线
+            lineStyle: {
+              type: 'dashed',            // 显示网格线的样式
+              color: '#DCDFE5'           // 显示网格线的颜色
+            }
+          },
+          axisLabel: {
+            show: true,                 // 是否显示刻度标签
+            interval: 0,                // 坐标轴刻度标签的显示间隔，在类目轴中有效.0显示所有
+            inside: false,               // 刻度标签是否朝内，默认朝外
+            rotate: 30,                  // 刻度标签旋转的角度，在类目轴的类目标签显示不下的时候可以通过旋转防止标签之间重叠；旋转的角度从 -90 度到 90 度
+            margin: -3,                  // 刻度标签与轴线之间的距离
+            color: '#4D4D4D',           // 刻度标签文字的颜色
+            fontStyle: 'normal',        // 文字字体的风格（'normal'，无样式；'italic'，斜体；'oblique'，倾斜字体）
+            fontWeight: 'normal',       // 文字字体的粗细（'normal'，无样式；'bold'，加粗；'bolder'，加粗的基础上再加粗；'lighter'，变细；数字定义粗细也可以，取值范围100至700）
+            fontSize: 12,               // 文字字体大小
+            align: 'center',            // 文字水平对齐方式，默认自动（'left'，'center'，'right'）
+            verticalAlign: 'middle',    // 文字垂直对齐方式，默认自动（'top'，'middle'，'bottom'
+            lineHeight: '12',           // 行高
+            //backgroundColor: 'red',   // 文字块背景色，例：'#123234', 'red', 'rgba(0,23,11,0.3)'
+            textStyle: {
+              fontSize: 10,
             },
           },
-          tooltip: {
-            show: true,
-            trigger: 'item',
-            transitionDuration: 0.4,
-            extraCssText: 'border-radius:5px;width:150px;height:fit-content;',
-            axisPointer: {
-              type: "line",                   // 指示器类型
-              snap: true                      // 坐标轴指示器是否自动吸附到点上
-            },
-            showContent: true,                // 是否显示提示框浮层
-            alwaysShowContent: false,         // 是否永远显示提示框内容
-            // triggerOn: 'mousemove',        // 提示框触发的条件
-            confine: true,                    // 是否将 tooltip 框限制在图表的区域内
-            backgroundColor: '#fff',          // 提示框浮层的背景颜色
-            padding: 15,                      // 提示框浮层内边距
-            textStyle: {
-              // color: '#78EC4E',            // 文字的颜色
-              fontStyle: 'normal',            // 文字字体的风格
-              fontWeight: 'normal'            // 文字字体的粗细
-            },
-            position: 'right',                // 显示位置，可以使用 ['50%','50%']
-            // 格式化显示内容
-            formatter: function(params){
-              let dataStr = `<div><p style="font-weight:bold;padding: 0;margin: 0;">${params.name}</p></div>`
-              dataStr += `<div style="padding: 0;margin: 0">
+        },
+        tooltip: {
+          show: true,
+          trigger: 'item',
+          transitionDuration: 0.4,
+          extraCssText: 'border-radius:5px;width:150px;height:fit-content;',
+          axisPointer: {
+            type: "line",                   // 指示器类型
+            snap: true                      // 坐标轴指示器是否自动吸附到点上
+          },
+          showContent: true,                // 是否显示提示框浮层
+          alwaysShowContent: false,         // 是否永远显示提示框内容
+          // triggerOn: 'mousemove',        // 提示框触发的条件
+          confine: true,                    // 是否将 tooltip 框限制在图表的区域内
+          backgroundColor: '#fff',          // 提示框浮层的背景颜色
+          padding: 15,                      // 提示框浮层内边距
+          textStyle: {
+            // color: '#78EC4E',            // 文字的颜色
+            fontStyle: 'normal',            // 文字字体的风格
+            fontWeight: 'normal'            // 文字字体的粗细
+          },
+          position: 'right',                // 显示位置，可以使用 ['50%','50%']
+          // 格式化显示内容
+          formatter: function (params) {
+            let dataStr = `<div><p style="font-weight:bold;padding: 0;margin: 0;">${params.name}</p></div>`
+            dataStr += `<div style="padding: 0;margin: 0">
                             <span style="display:inline-block;border-radius:50%;margin-right:5px;width:6px;height:6px;background-color:${params.color};"></span>
                             <span>${params.seriesName}:</span>
-                            <span style="float:right;color:#000000;margin-left:5px;">${params.data} %</span>
+                            <span style="float:right;color:#000000;margin-left:5px;">${Number(params.data).toFixed(4)} %</span>
                           </div>`
-              return dataStr
-            }
-          },
-          yAxis: {
-            type: 'value',
-            name: '使用率（%）',
-            nameRotate: 0,
-            nameLocation:'end',
-            nameGap: 10,
-            nameTextStyle: {
-              color: '#4D4D4D',
-              fontSize: 9,
-              padding: [70,0,0,-30],
-            },
-            axisLine:{
-              lineStyle:{
-                color: '#4D4D4D',           // 坐标轴的颜色
-                width: 1.3,                 // 坐标轴的宽度,可以去掉
-              }
-            },
-            splitLine: {
-              show: true,                  // 是否显示网格线
-              lineStyle: {
-                type: 'dashed',            // 显示网格线的样式
-                color: '#DCDFE5'           // 显示网格线的颜色
-              }
-            },
-            axisLabel: {
-              show: true,                  // 是否显示刻度标签
-              interval: 0,                 // 坐标轴刻度标签的显示间隔，在类目轴中有效.0显示所有
-              inside: false,               // 刻度标签是否朝内，默认朝外
-              rotate: 0,                   // 刻度标签旋转的角度，在类目轴的类目标签显示不下的时候可以通过旋转防止标签之间重叠；旋转的角度从 -90 度到 90 度
-              margin: 15,                  // 刻度标签与轴线之间的距离
-              color: '#4D4D4D',            // 刻度标签文字的颜色
-              fontStyle: 'normal',         // 文字字体的风格（'normal'，无样式；'italic'，斜体；'oblique'，倾斜字体）
-              fontWeight: 'normal',        // 文字字体的粗细（'normal'，无样式；'bold'，加粗；'bolder'，加粗的基础上再加粗；'lighter'，变细；数字定义粗细也可以，取值范围100至700）
-              fontSize: 12,                // 文字字体大小
-              align: 'center',             // 文字水平对齐方式，默认自动（'left'，'center'，'right'）
-              verticalAlign: 'middle',     // 文字垂直对齐方式，默认自动（'top'，'middle'，'bottom'
-              lineHeight: '12',            // 行高
-              //backgroundColor: 'red',    // 文字块背景色，例：'#123234', 'red', 'rgba(0,23,11,0.3)'
-              textStyle: {
-                fontSize: 10,
-              },
-            },
-          },
-          grid:{
-            left: '12%',
-            right: '4%',
-            bottom: '9%',
-            top: '14%',
-            containLabel: false
-          },
-          series: [
+            return dataStr
+          }
+        },
+        // 颜色分段显示
+        visualMap: {
+          show: false,                          // 不显示分段控制器
+          top: 10,                              // 分段控制器位置，距离上部定位 top
+          right: 10,                            // 分段控制器位置，距离右边定位 right
+          pieces: [
+            // 若不指定 max ，则为无限小（！没写反！）
+            {max:0},
+            // 0 ~ 50 颜色设置为：#096
             {
-              name: '当前使用率',
-              data: usageRateArray.value,
-              type: 'line',
-              smooth: true,
-              itemStyle: {
-                normal: {
-                  color: '#AC82DE',        // 折线点的颜色
-                  lineStyle: {
-                    color: '#AC82DE'       // 折线颜色
-                  }
-                }
-              },
-            }
+              gt: 0,
+              lte: 50,
+              color: '#096'
+            },
+            // 50 ~ 80 颜色为： #ffde33
+            {
+              gt: 50,
+              lte: 80,
+              color: '#ffde33'
+            },
+            // 80 ~ 100 颜色为：#ff0000
+            {
+              gt: 80,
+              lte: 100,
+              color: '#ff0000'
+            },
+            // 若不指定 min ,则为无限大（！没写反！）
+            {min:100},
           ]
-        };
-        powerLineOption.value && powerLineChart.value?.setOption(powerLineOption.value,true);
+        },
+        yAxis: {
+          type: 'value',
+          min: 20,                                  // 最小刻度值
+          max: 100,                                 // 最大刻度值
+          interval: 10,                             // 刻度步长
+          name: '使用率（%）',
+          nameRotate: 0,
+          nameLocation: 'end',
+          nameGap: 10,
+          nameTextStyle: {
+            color: '#4D4D4D',
+            fontSize: 9,
+            padding: [70, 0, 0, -30],
+          },
+          axisLine: {
+            lineStyle: {
+              color: '#4D4D4D',           // 坐标轴的颜色
+              width: 1.3,                 // 坐标轴的宽度,可以去掉
+            }
+          },
+          splitLine: {
+            show: true,                  // 是否显示网格线
+            lineStyle: {
+              type: 'dashed',            // 显示网格线的样式
+              color: '#DCDFE5'           // 显示网格线的颜色
+            }
+          },
+          axisLabel: {
+            show: true,                  // 是否显示刻度标签
+            interval: 0,                 // 坐标轴刻度标签的显示间隔，在类目轴中有效.0显示所有
+            inside: false,               // 刻度标签是否朝内，默认朝外
+            rotate: 0,                   // 刻度标签旋转的角度，在类目轴的类目标签显示不下的时候可以通过旋转防止标签之间重叠；旋转的角度从 -90 度到 90 度
+            margin: 15,                  // 刻度标签与轴线之间的距离
+            color: '#4D4D4D',            // 刻度标签文字的颜色
+            fontStyle: 'normal',         // 文字字体的风格（'normal'，无样式；'italic'，斜体；'oblique'，倾斜字体）
+            fontWeight: 'normal',        // 文字字体的粗细（'normal'，无样式；'bold'，加粗；'bolder'，加粗的基础上再加粗；'lighter'，变细；数字定义粗细也可以，取值范围100至700）
+            fontSize: 12,                // 文字字体大小
+            align: 'center',             // 文字水平对齐方式，默认自动（'left'，'center'，'right'）
+            verticalAlign: 'middle',     // 文字垂直对齐方式，默认自动（'top'，'middle'，'bottom'
+            lineHeight: '12',            // 行高
+            //backgroundColor: 'red',    // 文字块背景色，例：'#123234', 'red', 'rgba(0,23,11,0.3)'
+            textStyle: {
+              fontSize: 10,
+            },
+          },
+        },
+        grid: {
+          left: '12%',
+          right: '4%',
+          bottom: '12%',
+          top: '16%',
+          containLabel: false
+        },
+        series: [
+          {
+            name: '当前使用率',
+            data: usageRateArray.value,
+            type: 'line',
+            smooth: true,
+            // itemStyle: {
+            //   normal: {
+            //     color: '#AC82DE',        // 折线点的颜色
+            //     lineStyle: {
+            //       color: '#AC82DE'       // 折线颜色
+            //     }
+            //   }
+            // },
+          }
+        ]
       };
+      powerLineOption.value && powerLineChart.value?.setOption(powerLineOption.value, true);
+    };
 
-      const initCharts = ()=>{
-        const powerChartCircusDom = document.getElementById('power-chart-circus');
-        const powerChartHistogramDom = document.getElementById('power-chart-histogram');
-        const powerChartLineDom = document.getElementById('power-chart-line');
-        powerLineChart.value = echarts.init(powerChartLineDom);
-        const powerCircusChart = echarts.init(powerChartCircusDom);
-        const powerHistogramChart = echarts.init(powerChartHistogramDom);
-        window.addEventListener("resize",function (){
-          powerCircusChart?.resize();
-          powerHistogramChart?.resize();
-          powerLineChart.value?.resize();
-        });
-      }
-
-
-      return { systemInfo,jvmInfo };
+    const initCharts = () => {
+      const powerChartCircusDom = document.getElementById('power-chart-circus');
+      const powerChartHistogramDom = document.getElementById('power-chart-histogram');
+      const powerChartLineDom = document.getElementById('power-chart-line');
+      powerLineChart.value = echarts.init(powerChartLineDom);
+      const powerCircusChart = echarts.init(powerChartCircusDom);
+      const powerHistogramChart = echarts.init(powerChartHistogramDom);
+      window.addEventListener("resize", function () {
+        powerCircusChart?.resize();
+        powerHistogramChart?.resize();
+        powerLineChart.value?.resize();
+      });
     }
+
+
+    return {systemInfo, jvmInfo};
+  }
 }
