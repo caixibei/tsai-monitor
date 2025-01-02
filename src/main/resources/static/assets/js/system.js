@@ -122,8 +122,16 @@ const SystemComp = {
     const usageRateArray = ref([]);
     const usageRateTimeArray = ref([]);
     const maxLength = 15;
+
+    // 折线图
     const powerLineOption = ref({});
-    const powerLineChart = ref();
+    const powerLineChart = markRaw(ref());
+    // 圆环图 1
+    const powerCircusOption = ref({});
+    const powerCircusChart = markRaw(ref());
+    // 圆环图 2
+    const powerHistogramOption = ref()
+    const powerHistogramChart = markRaw(ref())
 
     // 获取服务器系统信息
     const getSystemInfo = () => {
@@ -370,7 +378,206 @@ const SystemComp = {
           }
         ]
       };
+
+      powerCircusOption.value = {
+        color: ['#A9DC71', '#ee8a68'], // 配置各版块颜色
+        legend: {
+          top: '5%',                      // 位置距离顶部 5%
+          icon: 'circle',                 // 图标改为小圆点
+          left: 'center',                 // 图例的水平位置，居中
+          itemWidth: 10,                  // 图标宽度
+          itemHeight: 10,                 // 图标高度
+          itemGap: 12,                    // 间隔
+          data: ['可用内存','已使用内存']
+        },
+        tooltip: {
+          show: true,                       // 是否显示提示框，false表示不显示
+          trigger: 'item',                  // 提示框触发的条件，item 表示当鼠标悬停到图表的某一项时触发
+          confine: true,                    // 提示框限制在图标区域内展示
+          formatter: `{b}: {c} GB <br> 占比: {d}%`          // 提示内容格式化，设置提示框显示数据项的名称和数值
+        },
+        series: [
+          {
+            name: '可用内存',                    // 数据系列的名称，这里表示可用内存
+            type: 'pie',                        // 图标类型，pie 表示饼图
+            radius: ['40%', '70%'],             // 饼图的半径，[30%,60%]表示内半径和外半径的比值范围，决定饼图的大小，用来制作环形图
+            avoidLabelOverlap: false,           // 是否避免标签重叠，false 表示不强制避免重叠
+            //roseType: 'area',                 // 玫瑰图
+            clockWise: true,                    // 控制饼图或环形图的扇区是否按顺时针方向绘制
+            center: ['50%', '60%'],             // 图例在容器中的位置，第一个控制左右，第二个控制上下
+            hoverAnimation: false,              // 控制图表元素在鼠标悬停时是否执行动画效果
+            itemStyle: {
+              borderRadius: 5,                    // 每一项的圆角半径，表示每个扇区的圆角大小
+              borderColor: '#fff',                // 扇区边框的大小
+              borderWidth: 2                      // 扇区边框的宽度
+            },
+            label: {
+              show: false,                                        // 是否显示标签
+              formatter: '{b}: {c} GB \n\n 占比: {d}% ',          // 自定义lable处展示那些数据及其格式
+              fontSize: 8,                                       // 字体大小
+              // position: 'center'                              // center表示放在扇区中心位置
+            },
+            labelLine: {
+              show: false,  // 是否显示标签线
+              length: 2,  // 挨着图例的直线的长度
+              length2: 2, // 挨着文字的直线的长度
+              normal: {
+                show: false, // 是否显示标签线
+                length: 2, // 挨着图例的直线的长度
+                length2: 2, // 挨着文字的直线的长度
+                lineStyle: {
+                  color: '#d3d3d3' //标签线颜色
+                },
+                align: 'left'
+              },
+              color: "#000",
+              emphasis: {
+                show: false
+              }
+            },
+            emphasis: {
+              // 饼图扇区被高亮的时候，标签的样式
+              label: {
+                show: false,                       // 是否显示标签
+                fontSize: 12,                     // 标签字体大小
+                fontWeight: 'normal'              // 标签字体粗细
+              }
+            },
+            // 数据项
+            data: [
+              {
+                name: '可用内存',
+                value: memoryInfo.value?.available?.replace(/[^0-9\.]/g,''),
+              },
+              {
+                name: '已使用内存',
+                value: memoryInfo.value?.used?.replace(/[^0-9\.]/g,''),
+                itemStyle: {
+                  normal: {
+                    color: {                            // 完成的圆环的颜色
+                      colorStops: [{
+                        offset: 0,
+                        color: '#ee8a68'                // 0% 处的颜色
+                      }, {
+                        offset: 1,
+                        color: '#FFA248',                // 100% 处的颜色
+                      }]
+                    },
+                    label: {
+                      show: false
+                    },
+                    labelLine: {
+                      show: false
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+
+      powerHistogramOption.value = {
+        color: ['#4E83B3', '#D14351'], // 配置各版块颜色
+        legend: {
+          top: '5%',                      // 位置距离顶部 5%
+          icon: 'circle',                 // 图标改为小圆点
+          left: 'center',                 // 图例的水平位置，居中
+          itemWidth: 10,                  // 图标宽度
+          itemHeight: 10,                 // 图标高度
+          itemGap: 12,                    // 间隔
+          data: ['可用虚拟内存','已使用虚拟内存']
+        },
+        tooltip: {
+          show: true,                       // 是否显示提示框，false表示不显示
+          trigger: 'item',                  // 提示框触发的条件，item 表示当鼠标悬停到图表的某一项时触发
+          confine: true,                    // 提示框限制在图标区域内展示
+          formatter: `{b}: {c} GB <br> 占比: {d}%`          // 提示内容格式化，设置提示框显示数据项的名称和数值
+        },
+        series: [
+          {
+            name: '可用虚拟内存',                 // 数据系列的名称，这里表示可用虚拟内存
+            type: 'pie',                        // 图标类型，pie 表示饼图
+            radius: ['40%', '70%'],             // 饼图的半径，[30%,60%]表示内半径和外半径的比值范围，决定饼图的大小，用来制作环形图
+            avoidLabelOverlap: false,           // 是否避免标签重叠，false 表示不强制避免重叠
+            //roseType: 'area',                 // 玫瑰图
+            clockWise: true,                    // 控制饼图或环形图的扇区是否按顺时针方向绘制
+            center: ['50%', '60%'],             // 图例在容器中的位置，第一个控制左右，第二个控制上下
+            hoverAnimation: false,              // 控制图表元素在鼠标悬停时是否执行动画效果
+            itemStyle: {
+              borderRadius: 5,                    // 每一项的圆角半径，表示每个扇区的圆角大小
+              borderColor: '#fff',                // 扇区边框的大小
+              borderWidth: 2                      // 扇区边框的宽度
+            },
+            label: {
+              show: false,                                        // 是否显示标签
+              formatter: '{b}: {c} GB \n\n 占比: {d}% ',          // 自定义lable处展示那些数据及其格式
+              fontSize: 8,                                       // 字体大小
+              // position: 'center'                              // center表示放在扇区中心位置
+            },
+            labelLine: {
+              show: false,  // 是否显示标签线
+              length: 2,  // 挨着图例的直线的长度
+              length2: 2, // 挨着文字的直线的长度
+              normal: {
+                show: false, // 是否显示标签线
+                length: 2, // 挨着图例的直线的长度
+                length2: 2, // 挨着文字的直线的长度
+                lineStyle: {
+                  color: '#d3d3d3' //标签线颜色
+                },
+                align: 'left'
+              },
+              color: "#000",
+              emphasis: {
+                show: false
+              }
+            },
+            emphasis: {
+              // 饼图扇区被高亮的时候，标签的样式
+              label: {
+                show: false,                       // 是否显示标签
+                fontSize: 12,                     // 标签字体大小
+                fontWeight: 'normal'              // 标签字体粗细
+              }
+            },
+            // 数据项
+            data: [
+              {
+                name: '可用虚拟内存',
+                value: memoryInfo.value?.virtualMemory?.virtualMax?.replace(/[^0-9\.]/g,'') - memoryInfo.value?.virtualMemory?.virtualInUse?.replace(/[^0-9\.]/g,''),
+              },
+              {
+                name: '已使用虚拟内存',
+                value: memoryInfo.value?.virtualMemory?.virtualInUse?.replace(/[^0-9\.]/g,''),
+                itemStyle: {
+                  normal: {
+                    color: {                            // 完成的圆环的颜色
+                      colorStops: [{
+                        offset: 0,
+                        color: '#D14351'                // 0% 处的颜色
+                      }, {
+                        offset: 1,
+                        color: '#E66F01',                // 100% 处的颜色
+                      }]
+                    },
+                    label: {
+                      show: false
+                    },
+                    labelLine: {
+                      show: false
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+
+      powerCircusOption.value && powerCircusChart.value?.setOption(powerCircusOption.value, true);
       powerLineOption.value && powerLineChart.value?.setOption(powerLineOption.value, true);
+      powerHistogramOption.value && powerHistogramChart.value?.setOption(powerHistogramOption.value, true);
     };
 
     const initCharts = () => {
@@ -378,10 +585,10 @@ const SystemComp = {
       const powerChartHistogramDom = document.getElementById('power-chart-histogram');
       const powerChartLineDom = document.getElementById('power-chart-line');
       powerLineChart.value = echarts.init(powerChartLineDom);
-      const powerCircusChart = echarts.init(powerChartCircusDom);
-      const powerHistogramChart = echarts.init(powerChartHistogramDom);
+      powerCircusChart.value = echarts.init(powerChartCircusDom);
+      powerHistogramChart.value = echarts.init(powerChartHistogramDom);
       window.addEventListener("resize", function () {
-        powerCircusChart?.resize();
+        powerCircusChart.value?.resize();
         powerHistogramChart?.resize();
         powerLineChart.value?.resize();
       });
