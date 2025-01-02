@@ -481,11 +481,11 @@ const SystemComp = {
         color: ['#4E83B3', '#D14351'], // 配置各版块颜色
         legend: {
           top: '5%',                      // 位置距离顶部 5%
+          left: '1%',                     // 图例的水平位置，位置距离左边 1%
           icon: 'circle',                 // 图标改为小圆点
-          left: 'center',                 // 图例的水平位置，居中
           itemWidth: 10,                  // 图标宽度
           itemHeight: 10,                 // 图标高度
-          itemGap: 12,                    // 间隔
+          itemGap: 0,                     // 间隔
           data: ['可用虚拟内存','已使用虚拟内存']
         },
         tooltip: {
