@@ -75,14 +75,16 @@
     height: 100%;
     display: flex;
     flex-wrap: wrap;
+    flex-direction: row;
 }
 
-.power-chart div{
-    flex: 1 0 50%;
+.power-chart>div{
+    flex: 1 1 50%;
     box-sizing: border-box;
     height: 50%;
     max-height: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow: hidden;
 }

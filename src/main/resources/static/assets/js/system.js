@@ -77,7 +77,7 @@ const systemHtml = `
     <el-card class="system-card" size="small">
       <template #header>
         <div class="card-header">
-          <span class="iconfont tsai-dianchi">电源状态</span>
+          <span class="iconfont tsai-zujian-cipanIO">内存信息</span>
         </div>
       </template>
       <div class="power-chart">
@@ -118,8 +118,9 @@ const SystemComp = {
       const systemInfo = ref({});
       const jvmInfo = ref({});
       const powerInfo = ref({});
-      const temperatureArray = ref([]);
-      const temperatureTimeArray = ref([]);
+      const memoryInfo = ref({});
+      const usageRateArray = ref([]);
+      const usageRateTimeArray = ref([]);
       const maxLength = 8;
       const powerLineOption = ref({});
       const powerLineChart = ref();
@@ -146,7 +147,7 @@ const SystemComp = {
           })
       }
 
-      // 获取电源信息
+      // 获取电源信息（！虚拟机不支持电源信息！）
       const getPowerSourceInfo = () => {
         get('/oshi/getPowerSourceInfo')
           .then((res) => {
@@ -157,35 +158,46 @@ const SystemComp = {
           })
       }
 
+      const getMemoryInfo = () => {
+        get('/oshi/getMemoryInfo')
+          .then((res) => {
+            memoryInfo.value = res
+          })
+          .catch(error => {
+            console.log(error);
+          })
+      }
+
       onMounted(()=>{
         initCharts();
-        setInterval(()=>{
-          getPowerSourceInfo()
-          updateCurrentCapacityArray()
-        }, 5000);
+        setInterval(updateMemoryUsageRate, 30000);
         getSystemInfo()
         setInterval(function () {
           getJvmInfo()
-          getPowerSourceInfo()
         },1000);
       });
 
-      const updateCurrentCapacityArray = () => {
-        const data = powerInfo.value;
-        const temperature = data?.temperature;
-        const temperatureTime = data?.temperatureTime;
-        if (temperatureArray.value?.length >= maxLength
-            && temperatureTimeArray.value?.length >= maxLength) {
-          temperatureArray.value?.shift();
-          temperatureTimeArray.value?.shift();
+      const updateMemoryUsageRate = ()=> {
+        getMemoryInfo()
+        updateUsageRateArray()
+      }
+
+      const updateUsageRateArray = () => {
+        const data = memoryInfo.value;
+        const usageRate = data?.usageRate;
+        const usageRateTime = data?.usageRateTime;
+        if (usageRateArray.value?.length >= maxLength
+            && usageRateTimeArray.value?.length >= maxLength) {
+          usageRateArray.value?.shift();
+          usageRateTimeArray.value?.shift();
         }
-        temperatureArray.value?.push(temperature);
-        temperatureTimeArray.value?.push(temperatureTime);
+        usageRateArray.value?.push(usageRate);
+        usageRateTimeArray.value?.push(usageRateTime);
         powerLineOption.value = {
           xAxis: {
             type: 'category',
-            data: temperatureTimeArray.value,
-            name: '时间',
+            data: usageRateTimeArray.value,
+            name: '使用率（%）',
             nameLocation: 'end',
             nameRotate: '0',
             axisTick: {
@@ -256,7 +268,7 @@ const SystemComp = {
               dataStr += `<div style="padding: 0;margin: 0">
                             <span style="display:inline-block;border-radius:50%;margin-right:5px;width:6px;height:6px;background-color:${params.color};"></span>
                             <span>${params.seriesName}:</span>
-                            <span style="float:right;color:#000000;margin-left:5px;">${params.data} °C</span>
+                            <span style="float:right;color:#000000;margin-left:5px;">${params.data} %</span>
                           </div>`
               return dataStr
             }
@@ -314,7 +326,7 @@ const SystemComp = {
           series: [
             {
               name: '当前温度',
-              data: temperatureArray.value,
+              data: usageRateArray.value,
               type: 'line',
               smooth: true,
               itemStyle: {

@@ -6,6 +6,13 @@
   "description": "项目地址：git@github.com:caixibei/tsai-monitor.git",
   "glyphs": [
     {
+      "icon_id": "12378585",
+      "name": "组件-磁盘IO",
+      "font_class": "zujian-cipanIO",
+      "unicode": "e656",
+      "unicode_decimal": 58966
+    },
+    {
       "icon_id": "3456456",
       "name": "帮助与说明",
       "font_class": "bangzhuyushuoming",

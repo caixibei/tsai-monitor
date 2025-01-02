@@ -1,4 +1,5 @@
 package tsai.spring.boot.util;
+
 import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
 import oshi.SystemInfo;
@@ -7,6 +8,7 @@ import oshi.software.os.*;
 import oshi.util.EdidUtil;
 import oshi.util.FormatUtil;
 import oshi.util.ParseUtil;
+
 import java.lang.management.ManagementFactory;
 import java.net.NetworkInterface;
 import java.time.Duration;
@@ -15,8 +17,10 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * Oshi 硬件信息读取工具类
+ *
  * @author caixibei
  */
 @SuppressWarnings({"unused"})
@@ -218,6 +222,7 @@ public class OShiUtil {
 
     /**
      * 网络接口信息读取
+     *
      * @return {@link List}
      */
     public static List<Map<String, Object>> getNetWorkInterfaces() {
@@ -262,6 +267,7 @@ public class OShiUtil {
 
     /**
      * 读取文件系统信息
+     *
      * @return {@link List}
      */
     public static Map<String, Object> getFileSystemInfo() {
@@ -272,7 +278,6 @@ public class OShiUtil {
         fsInfo.put("maxFileDescriptors", fileSystem.getMaxFileDescriptors());
         fsInfo.put("fileDescriptors", String.format("%d/%d", fileSystem.getOpenFileDescriptors(), fileSystem.getMaxFileDescriptors()));
         fsInfo.put("fdUsageRate", (100d * fileSystem.getOpenFileDescriptors() / fileSystem.getMaxFileDescriptors()) + "%");
-
         final List<OSFileStore> fileStores = fileSystem.getFileStores();
         for (int i = 0; i < fileStores.size(); i++) {
             final Map<String, Object> fileStoreInfo = new ConcurrentHashMap<>();
@@ -402,7 +407,7 @@ public class OShiUtil {
             // temperature: 电池的温度，单位可能是摄氏度或华氏度，值为 0，可能表示无法读取或未测量；
             powerSourceMap.put("temperature", powerSource.getTemperature());
             // temperatureTime：实时温度的当前时间，用作图标展示；
-            powerSourceMap.put("temperatureTime", DateUtil.format(LocalDateTime.now(),"HH:mm:ss"));
+            powerSourceMap.put("temperatureTime", DateUtil.format(LocalDateTime.now(), "HH:mm:ss"));
             // isDischarging: 表示电池是否在放电，false 表示未放电（通常指设备接入了外部电源）；
             powerSourceMap.put("isDischarging", powerSource.isDischarging());
             // isCharging: 表示电池是否在充电，false 表示当前未充电；
@@ -515,15 +520,16 @@ public class OShiUtil {
      * @return {@link Map}
      */
     public static Map<String, Object> getMemoryInfo() {
-        final GlobalMemory globalMemory = hal.getMemory();
-        final Map<String, Object> gmMap = new ConcurrentHashMap<>();
+        GlobalMemory globalMemory = hal.getMemory();
+        Map<String, Object> gmMap = new ConcurrentHashMap<>();
         gmMap.put("total", FormatUtil.formatBytes(globalMemory.getTotal()));
         gmMap.put("available", FormatUtil.formatBytes(globalMemory.getAvailable()));
         gmMap.put("used", FormatUtil.formatBytes(globalMemory.getTotal() - globalMemory.getAvailable()));
         gmMap.put("usageRate", 100d * (globalMemory.getTotal() - globalMemory.getAvailable()) / globalMemory.getTotal());
+        gmMap.put("usageRateTime", DateUtil.format(LocalDateTime.now(), "HH:mm:ss"));
         gmMap.put("pageSize", globalMemory.getPageSize());
-        final VirtualMemory virtualMemory = globalMemory.getVirtualMemory();
-        final Map<String, Object> vmMap = new ConcurrentHashMap<>();
+        VirtualMemory virtualMemory = globalMemory.getVirtualMemory();
+        Map<String, Object> vmMap = new ConcurrentHashMap<>();
         vmMap.put("toString", virtualMemory);
         vmMap.put("swapTotal", FormatUtil.formatBytes(virtualMemory.getSwapTotal()));
         vmMap.put("swapUsed", FormatUtil.formatBytes(virtualMemory.getSwapUsed()));
@@ -532,10 +538,10 @@ public class OShiUtil {
         vmMap.put("virtualInUse", FormatUtil.formatBytes(virtualMemory.getVirtualInUse()));
         vmMap.put("virtualUsageRate", 100d * virtualMemory.getVirtualInUse() / virtualMemory.getVirtualMax());
         gmMap.put("virtualMemory", vmMap);
-        final List<PhysicalMemory> physicalMemoryList = globalMemory.getPhysicalMemory();
-        final List<Map<String, Object>> pmInfoList = new ArrayList<>(physicalMemoryList.size());
+        List<PhysicalMemory> physicalMemoryList = globalMemory.getPhysicalMemory();
+        List<Map<String, Object>> pmInfoList = new ArrayList<>(physicalMemoryList.size());
         for (PhysicalMemory pm : physicalMemoryList) {
-            final Map<String, Object> pmMap = new ConcurrentHashMap<>();
+            Map<String, Object> pmMap = new ConcurrentHashMap<>();
             pmMap.put("toString", String.valueOf(pm));
             pmMap.put("bankLabel", pm.getBankLabel());
             pmMap.put("manufacturer", pm.getManufacturer());
@@ -580,6 +586,7 @@ public class OShiUtil {
 
     /**
      * 读取显示器信息
+     *
      * @return {@link List}
      */
     public static List<Map<String, Object>> getDisplayInformation() {
@@ -637,6 +644,7 @@ public class OShiUtil {
 
     /**
      * 获取操作 JVM 信息
+     *
      * @return {@link Map}
      */
     public static Map<String, Object> getJvmInfo() {
@@ -715,6 +723,7 @@ public class OShiUtil {
 
     /**
      * 获取JVM内存信息
+     *
      * @return Map<String, Object>
      */
     public static Map<String, Object> getJvmMemory() {
@@ -735,10 +744,11 @@ public class OShiUtil {
 
     /**
      * 获取系统信息
+     *
      * @return {@link Map}
      */
-    public static Map<String,Object> getSystemInfo(){
-        Map<String,Object> serverSysInfo = new ConcurrentHashMap<>();
+    public static Map<String, Object> getSystemInfo() {
+        Map<String, Object> serverSysInfo = new ConcurrentHashMap<>();
         Properties properties = System.getProperties();
         // 操作系统名称
         serverSysInfo.put("osName", properties.getProperty("os.name"));
@@ -757,50 +767,51 @@ public class OShiUtil {
         // 用户的时区，Asia/Shanghai 表示上海时区（容器环境无访问权限）
         serverSysInfo.put("userTimezone", getSystemProperty("user.timezone"));
         // 用户的语言设置，zh 表示中文（容器环境无访问权限）
-        serverSysInfo.put("userLanguage", getSystemProperty ("user.language"));
+        serverSysInfo.put("userLanguage", getSystemProperty("user.language"));
         /*
-        * 系统环境变量
-        * USERDOMAIN_ROAMINGPROFILE：表示用户的域名；
-        * PROCESSOR_LEVEL： 处理器级别；
-        * SESSIONNAME： 当前会话的名称，Console 表示是本地控制台会话；
-        * JAVA_HOME： Java安装目录路径；
-        * MAVEN_HOME：Maven安装目录；
-        * PATH：系统的PATH环境变量，包含了可以被执行的命令或程序的路径；
-        * TNS_ADMIN：Oracle的网络配置文件路径，表示Oracle连接配置的路径；
-        * ORACLE_HOME：Oracle客户端的安装路径；
-        * ANDROID_SDK_ROOT：Android SDK的安装路径，表示Android开发环境的路径；
-        * TEMP/TMP：临时文件的存放路径，用于存储临时数据；
-        * CLASSPATH：Java类路径，表示在执行Java应用程序时需要的类文件位置；
-        * OS：操作系统类型，Windows_NT 表示Windows操作系统；
-        * COMPUTERNAME：计算机名，表示计算机的名称；
-        * NUMBER_OF_PROCESSORS：处理器的核心数，8 表示有8个处理器核心；
-        * LOGONSERVER：登录服务器，表示域登录的服务器；
-        * PUBLIC：公共文件目录；
-        * NVM_HOME：Node Version Manager的安装路径；
-        * ZES_ENABLE_SYSMAN：ZES系统管理工具的启用状态，值为1表示启用；
-        * CLION_VM_OPTIONS：表示CLion的虚拟机配置文件路径；
-        * SVN_EXPERIMENTAL_COMMANDS：SVN（Subversion）的实验性命令设置，值为shelf2；
-        * IDEA_VM_OPTIONS：表示IntelliJ IDEA的虚拟机配置文件路径；
-        * PYCHARM_VM_OPTIONS：表示PyCharm的虚拟机配置文件路径；
-        * HOMEPATH/HOMEDRIVE：用户主目录的路径；
-        * ProgramFiles：64位程序的安装目录；
-        * APPDATA：用户的应用数据目录，存储应用程序的配置文件和数据；
-        */
+         * 系统环境变量
+         * USERDOMAIN_ROAMINGPROFILE：表示用户的域名；
+         * PROCESSOR_LEVEL： 处理器级别；
+         * SESSIONNAME： 当前会话的名称，Console 表示是本地控制台会话；
+         * JAVA_HOME： Java安装目录路径；
+         * MAVEN_HOME：Maven安装目录；
+         * PATH：系统的PATH环境变量，包含了可以被执行的命令或程序的路径；
+         * TNS_ADMIN：Oracle的网络配置文件路径，表示Oracle连接配置的路径；
+         * ORACLE_HOME：Oracle客户端的安装路径；
+         * ANDROID_SDK_ROOT：Android SDK的安装路径，表示Android开发环境的路径；
+         * TEMP/TMP：临时文件的存放路径，用于存储临时数据；
+         * CLASSPATH：Java类路径，表示在执行Java应用程序时需要的类文件位置；
+         * OS：操作系统类型，Windows_NT 表示Windows操作系统；
+         * COMPUTERNAME：计算机名，表示计算机的名称；
+         * NUMBER_OF_PROCESSORS：处理器的核心数，8 表示有8个处理器核心；
+         * LOGONSERVER：登录服务器，表示域登录的服务器；
+         * PUBLIC：公共文件目录；
+         * NVM_HOME：Node Version Manager的安装路径；
+         * ZES_ENABLE_SYSMAN：ZES系统管理工具的启用状态，值为1表示启用；
+         * CLION_VM_OPTIONS：表示CLion的虚拟机配置文件路径；
+         * SVN_EXPERIMENTAL_COMMANDS：SVN（Subversion）的实验性命令设置，值为shelf2；
+         * IDEA_VM_OPTIONS：表示IntelliJ IDEA的虚拟机配置文件路径；
+         * PYCHARM_VM_OPTIONS：表示PyCharm的虚拟机配置文件路径；
+         * HOMEPATH/HOMEDRIVE：用户主目录的路径；
+         * ProgramFiles：64位程序的安装目录；
+         * APPDATA：用户的应用数据目录，存储应用程序的配置文件和数据；
+         */
         serverSysInfo.put("sysEnv", System.getenv());
         return serverSysInfo;
     }
 
     /**
      * 针对部分容器环境，对系统的属性无权访问
+     *
      * @param key 键
      * @return {@link Object}
      */
-    protected static Object getSystemProperty(String key){
+    protected static Object getSystemProperty(String key) {
         Object val;
         Properties properties = System.getProperties();
-        try{
+        try {
             val = properties.getProperty(key);
-        }catch (Exception e){
+        } catch (Exception e) {
             val = "无访问权限";
         }
         return val;
