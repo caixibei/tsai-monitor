@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import tsai.spring.boot.util.OShiUtil;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -45,6 +46,13 @@ public class OShiController {
         Map<String, Object> systemInfo = OShiUtil.getSystemInfo();
         log.info("===========> process information::{}", systemInfo);
         return systemInfo;
+    }
+
+    @GetMapping(value = "/getPowerSourceInfo")
+    public List<Map<String, Object>> getPowerSourceInfo(){
+        List<Map<String, Object>> powerSourceInfo = OShiUtil.getPowerSourceInfo();
+        log.info("===========> process information::{}", powerSourceInfo);
+        return powerSourceInfo;
     }
 
 }

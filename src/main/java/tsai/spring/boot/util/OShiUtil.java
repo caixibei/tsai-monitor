@@ -369,30 +369,49 @@ public class OShiUtil {
      * @return List<Map < String, Object>
      */
     public static List<Map<String, Object>> getPowerSourceInfo() {
-        final List<PowerSource> powerSources = hal.getPowerSources();
-        final List<Map<String, Object>> powerSourcesList = new ArrayList<>(powerSources.size());
+        List<PowerSource> powerSources = hal.getPowerSources();
+        List<Map<String, Object>> powerSourcesList = new ArrayList<>(powerSources.size());
         for (PowerSource powerSource : powerSources) {
-            final Map<String, Object> powerSourceMap = new ConcurrentHashMap<>();
-            powerSourceMap.put("toString", String.valueOf(powerSource));
+            Map<String, Object> powerSourceMap = new ConcurrentHashMap<>();
+            // amperage: 电池的电流，单位是安培（A），值为 0，表示当前电流为零或无法读取。
             powerSourceMap.put("amperage", powerSource.getAmperage());
+            // name: 电池的逻辑名称，值为“System Battery”，表示这是系统内置的电池。
             powerSourceMap.put("name", powerSource.getName());
+            // capacityUnits: 电池容量的单位，值为 “mWh”，即毫瓦时；
             powerSourceMap.put("capacityUnits", powerSource.getCapacityUnits());
+            // serialNumber: 电池的序列号，用于唯一标识这块电池；
             powerSourceMap.put("serialNumber", powerSource.getSerialNumber());
+            // currentCapacity: 电池的当前容量，单位是 mWh；
             powerSourceMap.put("currentCapacity", powerSource.getCurrentCapacity());
+            // deviceName: 电池设备名称，值为“RI4B02W”，用于标识电池型号或设备名；
             powerSourceMap.put("deviceName", powerSource.getDeviceName());
+            // manufacturer: 电池制造商的名称，值为“SUNWODA”。
             powerSourceMap.put("manufacturer", powerSource.getManufacturer());
+            // voltage: 电池电压，单位是伏特（V） ；
             powerSourceMap.put("voltage", powerSource.getVoltage());
+            // chemistry: 电池化学成分，值为“LiOn”，表示锂离子电池；
             powerSourceMap.put("chemistry", powerSource.getChemistry());
+            // cycleCount: 电池的循环次数，值为 0 表示该电池尚未完整充放电一次，或者信息无法读取；
             powerSourceMap.put("cycleCount", powerSource.getCycleCount());
+            // powerUsageRate: 电池的实时功耗（消耗功率），值为 0，可能表示当前功耗无法读取或电池不在使用；
             powerSourceMap.put("powerUsageRate", powerSource.getPowerUsageRate());
+            // designCapacity: 电池的设计容量（出厂时的理论最大容量），单位是 mWh；
             powerSourceMap.put("designCapacity", powerSource.getDesignCapacity());
+            // maxCapacity: 电池的最大容量，单位是 mWh（毫瓦时）；
             powerSourceMap.put("maxCapacity", powerSource.getMaxCapacity());
+            // temperature: 电池的温度，单位可能是摄氏度或华氏度，值为 0，可能表示无法读取或未测量；
             powerSourceMap.put("temperature", powerSource.getTemperature());
+            // isDischarging: 表示电池是否在放电，false 表示未放电（通常指设备接入了外部电源）；
             powerSourceMap.put("isDischarging", powerSource.isDischarging());
+            // isCharging: 表示电池是否在充电，false 表示当前未充电；
             powerSourceMap.put("isCharging", powerSource.isCharging());
+            // isPowerOnline: 表示电源是否在线，true 表示设备接通了电源（如充电器插入）；
             powerSourceMap.put("isPowerOnLine", powerSource.isPowerOnLine());
+            // timeRemainingInstant: 表示电池的即时剩余时间，单位为分钟。如果值为 -1，可能意味着电池剩余时间无法确定；
             powerSourceMap.put("timeRemainingInstant", powerSource.getTimeRemainingInstant());
+            // timeRemainingEstimated: 电池剩余的估计时间（基于当前电池状态和使用情况），单位可能是分钟，-1 表示无法估算剩余时间；
             powerSourceMap.put("timeRemainingEstimated", powerSource.getTimeRemainingEstimated());
+            // remainingCapacityPercent: 电池的剩余容量百分比，值为 1 表示 1%；
             powerSourceMap.put("remainingCapacityPercent", powerSource.getRemainingCapacityPercent());
             powerSourcesList.add(powerSourceMap);
         }
