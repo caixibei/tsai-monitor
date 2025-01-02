@@ -77,7 +77,7 @@ const systemHtml = `
     <el-card class="system-card" size="small">
       <template #header>
         <div class="card-header">
-          <span class="iconfont tsai-zujian-cipanIO">内存信息</span>
+          <span class="iconfont tsai-neicunshiyongshuai">运行内存监控</span>
         </div>
       </template>
       <div class="power-chart">
@@ -96,7 +96,7 @@ const systemHtml = `
     <el-card class="system-card" size="small">
       <template #header>
         <div class="card-header">
-          <span class="iconfont tsai-neicunshiyongshuai">内存占用率</span>
+          <span class="iconfont tsai-zujian-cipanIO">磁盘信息</span>
         </div>
       </template>
       
@@ -121,7 +121,7 @@ const SystemComp = {
       const memoryInfo = ref({});
       const usageRateArray = ref([]);
       const usageRateTimeArray = ref([]);
-      const maxLength = 8;
+      const maxLength = 10;
       const powerLineOption = ref({});
       const powerLineChart = ref();
 
@@ -162,6 +162,7 @@ const SystemComp = {
         get('/oshi/getMemoryInfo')
           .then((res) => {
             memoryInfo.value = res
+            updateUsageRateArray()
           })
           .catch(error => {
             console.log(error);
@@ -170,17 +171,12 @@ const SystemComp = {
 
       onMounted(()=>{
         initCharts();
-        setInterval(updateMemoryUsageRate, 30000);
+        setInterval(getMemoryInfo, 3000);
         getSystemInfo()
         setInterval(function () {
           getJvmInfo()
         },1000);
       });
-
-      const updateMemoryUsageRate = ()=> {
-        getMemoryInfo()
-        updateUsageRateArray()
-      }
 
       const updateUsageRateArray = () => {
         const data = memoryInfo.value;
@@ -197,7 +193,7 @@ const SystemComp = {
           xAxis: {
             type: 'category',
             data: usageRateTimeArray.value,
-            name: '使用率（%）',
+            name: '时间',
             nameLocation: 'end',
             nameRotate: '0',
             axisTick: {
@@ -225,9 +221,9 @@ const SystemComp = {
             axisLabel: {
               show: true,                 // 是否显示刻度标签
               interval: 0,                // 坐标轴刻度标签的显示间隔，在类目轴中有效.0显示所有
-              inside: true,               // 刻度标签是否朝内，默认朝外
-              rotate: 0,                  // 刻度标签旋转的角度，在类目轴的类目标签显示不下的时候可以通过旋转防止标签之间重叠；旋转的角度从 -90 度到 90 度
-              margin: 4,                  // 刻度标签与轴线之间的距离
+              inside: false,               // 刻度标签是否朝内，默认朝外
+              rotate: 30,                  // 刻度标签旋转的角度，在类目轴的类目标签显示不下的时候可以通过旋转防止标签之间重叠；旋转的角度从 -90 度到 90 度
+              margin: -3,                  // 刻度标签与轴线之间的距离
               color: '#4D4D4D',           // 刻度标签文字的颜色
               fontStyle: 'normal',        // 文字字体的风格（'normal'，无样式；'italic'，斜体；'oblique'，倾斜字体）
               fontWeight: 'normal',       // 文字字体的粗细（'normal'，无样式；'bold'，加粗；'bolder'，加粗的基础上再加粗；'lighter'，变细；数字定义粗细也可以，取值范围100至700）
@@ -275,14 +271,14 @@ const SystemComp = {
           },
           yAxis: {
             type: 'value',
-            name: '温度',
+            name: '使用率（%）',
             nameRotate: 0,
             nameLocation:'end',
-            nameGap: 1,
+            nameGap: 10,
             nameTextStyle: {
               color: '#4D4D4D',
               fontSize: 9,
-              padding: [40,0,0,-60],
+              padding: [70,0,0,-30],
             },
             axisLine:{
               lineStyle:{
@@ -317,15 +313,15 @@ const SystemComp = {
             },
           },
           grid:{
-            left: '3%',
+            left: '10%',
             right: '4%',
-            bottom: '10%',
-            top: '7%',
-            containLabel: true
+            bottom: '9%',
+            top: '12%',
+            containLabel: false
           },
           series: [
             {
-              name: '当前温度',
+              name: '当前使用率',
               data: usageRateArray.value,
               type: 'line',
               smooth: true,

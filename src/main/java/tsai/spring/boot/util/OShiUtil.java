@@ -526,7 +526,7 @@ public class OShiUtil {
         gmMap.put("available", FormatUtil.formatBytes(globalMemory.getAvailable()));
         gmMap.put("used", FormatUtil.formatBytes(globalMemory.getTotal() - globalMemory.getAvailable()));
         gmMap.put("usageRate", 100d * (globalMemory.getTotal() - globalMemory.getAvailable()) / globalMemory.getTotal());
-        gmMap.put("usageRateTime", DateUtil.format(LocalDateTime.now(), "HH:mm:ss"));
+        gmMap.put("usageRateTime", DateUtil.format(LocalDateTime.now(), "mm:ss"));
         gmMap.put("pageSize", globalMemory.getPageSize());
         VirtualMemory virtualMemory = globalMemory.getVirtualMemory();
         Map<String, Object> vmMap = new ConcurrentHashMap<>();
