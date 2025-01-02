@@ -313,10 +313,10 @@ const SystemComp = {
             },
           },
           grid:{
-            left: '10%',
+            left: '12%',
             right: '4%',
             bottom: '9%',
-            top: '12%',
+            top: '14%',
             containLabel: false
           },
           series: [
