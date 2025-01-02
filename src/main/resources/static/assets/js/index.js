@@ -1,4 +1,4 @@
-const { createApp,ref } = Vue;
+const { createApp,ref,onMounted } = Vue;
 const { createRouter, createWebHashHistory } = VueRouter;
 
 const routes = [

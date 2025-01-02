@@ -401,6 +401,8 @@ public class OShiUtil {
             powerSourceMap.put("maxCapacity", powerSource.getMaxCapacity());
             // temperature: 电池的温度，单位可能是摄氏度或华氏度，值为 0，可能表示无法读取或未测量；
             powerSourceMap.put("temperature", powerSource.getTemperature());
+            // temperatureTime：实时温度的当前时间，用作图标展示；
+            powerSourceMap.put("temperatureTime", DateUtil.format(LocalDateTime.now(),"HH:mm:ss"));
             // isDischarging: 表示电池是否在放电，false 表示未放电（通常指设备接入了外部电源）；
             powerSourceMap.put("isDischarging", powerSource.isDischarging());
             // isCharging: 表示电池是否在充电，false 表示当前未充电；
