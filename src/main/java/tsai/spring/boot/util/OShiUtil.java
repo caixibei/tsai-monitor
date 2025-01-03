@@ -10,7 +10,9 @@ import oshi.util.FormatUtil;
 import oshi.util.ParseUtil;
 
 import java.lang.management.ManagementFactory;
+import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.net.UnknownHostException;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -210,11 +212,11 @@ public class OShiUtil {
             //连接对象的字符串表示。
             ipConnectionInfo.put("toString", String.valueOf(ipConnection));
             //远程地址
-            ipConnectionInfo.put("foreignAddress", Arrays.toString(ipConnection.getForeignAddress()));
+            ipConnectionInfo.put("foreignAddress", convertBytesToIp(ipConnection.getForeignAddress()));
             //远程端口
             ipConnectionInfo.put("foreignPort", ipConnection.getForeignPort());
             //本地地址
-            ipConnectionInfo.put("localAddress", Arrays.toString(ipConnection.getLocalAddress()));
+            ipConnectionInfo.put("localAddress", convertBytesToIp(ipConnection.getLocalAddress()));
             //连接的当前状态
             ipConnectionInfo.put("state", ipConnection.getState());
             //连接的类型（例如 TCP 或 UDP）。
@@ -231,6 +233,20 @@ public class OShiUtil {
         }
         ipStatisticsMap.put("ipConnections", ipConnectionInfoList);
         return ipStatisticsMap;
+    }
+
+    /**
+     * 返回标准的IP地址
+     * @param address
+     * @return {@link String}
+     */
+    protected static String convertBytesToIp(byte[] address) {
+        try {
+            InetAddress inetAddress = InetAddress.getByAddress(address);
+            return inetAddress.getHostAddress();
+        } catch (UnknownHostException e) {
+            return "Unknown";
+        }
     }
 
     /**
@@ -579,15 +595,20 @@ public class OShiUtil {
      * @return {@link List}
      */
     public static List<Map<String, Object>> getSystemServiceInfo() {
-        final List<OSService> services = operatingSystem.getServices();
-        final List<Map<String, Object>> systemServiceList = new ArrayList<>(services.size());
+        List<OSService> services = operatingSystem.getServices();
+        List<Map<String, Object>> systemServiceList = new ArrayList<>(services.size());
         for (int i = 0; i < services.size(); i++) {
-            final OSService osService = services.get(i);
-            final Map<String, Object> osServiceMap = new ConcurrentHashMap<>();
+            OSService osService = services.get(i);
+            Map<String, Object> osServiceMap = new ConcurrentHashMap<>();
+            //当前服务在列表中的索引位置，用于标识该服务在返回结果中的位置。它是一个从 0 开始的序号。
             osServiceMap.put("index", i);
+            //当前服务的字符串表示，通常是通过调用 String.valueOf(osService) 获取，通常会返回服务对象的 toString() 方法输出，描述该服务的基本信息。
             osServiceMap.put("toString", String.valueOf(osService));
+            //当前服务的状态，调用 osService.getState() 获取。服务的状态是 OSService.State 枚举类型，通常包含如 RUNNING、STOPPED 等状态值。通过 osService.getState().name() 获取其名称（字符串形式）。
             osServiceMap.put("state", osService.getState().name());
+            //当前服务的进程ID，表示该服务正在运行的进程标识符。通过 osService.getProcessID() 获取服务对应进程的ID。
             osServiceMap.put("pid", osService.getProcessID());
+            //当前服务的名称，通过 osService.getName() 获取服务的名称。这个名称通常是服务的标识符或注册名称。
             osServiceMap.put("name", osService.getName());
             systemServiceList.add(osServiceMap);
         }
@@ -600,9 +621,11 @@ public class OShiUtil {
      * @return String
      */
     public static Map<String, Object> getSensorInfo() {
-        final Map<String, Object> sensorInfo = new ConcurrentHashMap<>();
-        final Sensors sensors = hal.getSensors();
+        Map<String, Object> sensorInfo = new ConcurrentHashMap<>();
+        Sensors sensors = hal.getSensors();
+        //将 Sensors 对象转换为字符串，通过调用 String.valueOf(sensors) 获取。通常 toString() 方法返回的是该对象的简要描述或一些关键信息，可以用来了解该对象的基本情况。
         sensorInfo.put("toString", String.valueOf(sensors));
+        //该字段直接存储了 Sensors 对象实例本身。它可以用来获取更详细的传感器信息或访问具体的传感器数据。它没有经过额外处理或格式化。
         sensorInfo.put("instance", sensors);
         return sensorInfo;
     }
@@ -765,12 +788,18 @@ public class OShiUtil {
      */
     public static Map<String, Object> getOperateSystemInfo() {
         Map<String, Object> osInfo = new ConcurrentHashMap<>();
+        // 当前操作系统的名称，通常包括操作系统的类型、版本等。
         osInfo.put("osName", String.valueOf(operatingSystem));
+        //系统启动时间。
         osInfo.put("booted", Instant.ofEpochSecond(operatingSystem.getSystemBootTime()));
+        //当前系统的所有会话信息
         osInfo.put("sessionList", operatingSystem.getSessions());
+        //当前计算机的基本信息
         ComputerSystem computerSystem = hal.getComputerSystem();
         osInfo.put("computerSystem", String.valueOf(computerSystem));
+        //计算机的固件信息。
         osInfo.put("firmware", computerSystem.getFirmware());
+        //计算机的主板信息
         osInfo.put("baseboard", computerSystem.getBaseboard());
         return osInfo;
     }
@@ -783,7 +812,9 @@ public class OShiUtil {
     public static Map<String, Object> getCpuInfo() {
         Map<String, Object> cpuInfo = new ConcurrentHashMap<>();
         CentralProcessor processor = hal.getProcessor();
+        //CPU 信息的字符串表示。
         cpuInfo.put("toString", String.valueOf(processor));
+        //获取CPU实例对象，CentralProcessor 是一个表示 CPU 的类，它提供了有关 CPU 的更多详细信息，例如处理器的核心数量、型号、频率等。
         cpuInfo.put("instance", processor);
         return cpuInfo;
     }
@@ -794,49 +825,70 @@ public class OShiUtil {
      * @return {@link List}
      */
     public static List<Map<String, Object>> getDisplayInformation() {
+        //显示器列表，包含系统中所有连接的显示器信息。每个 Display 对象代表一个显示器。
         List<Display> displays = hal.getDisplays();
+        //该列表用于存储每个显示器的信息。每个显示器的信息通过 Map<String, Object> 表示，键值对形式存储各种与该显示器相关的属性。
         List<Map<String, Object>> displayInfos = new ArrayList<>(displays.size());
         for (int i = 0; i < displays.size(); i++) {
+            //每个显示器的详细信息，通过键值对的形式存储在 Map 中。键是属性名，值是对应的属性值。
             Map<String, Object> displayInfo = new ConcurrentHashMap<>();
+            //显示器在列表中的索引，表示该显示器在系统中是第几个显示器。
             displayInfo.put("index", String.valueOf(i));
             final Display display = displays.get(i);
+            //从 Display 对象获取的 EDID 数据（扩展显示识别数据）。EDID 是显示器与计算机通信时传输的标准数据格式，用来描述显示器的基本信息和特性。
             byte[] edidBytes = display.getEdid();
+            //显示器制造商的 ID，这是制造商的唯一标识符。
             displayInfo.put("manufacturerId", EdidUtil.getManufacturerID(edidBytes));
+            //显示器的产品 ID，EDID 中还包含显示器的产品标识符。
             displayInfo.put("productId", EdidUtil.getProductID(edidBytes));
+            //判断显示器是否是数字显示器，如果是数字显示器，返回 "Digital"；否则，返回 "Analog"。
             displayInfo.put("isDigital", EdidUtil.isDigital(edidBytes) ? "Digital" : "Analog");
+            //显示器的序列号，显示器的唯一序列号。
             displayInfo.put("serialNo", EdidUtil.getSerialNo(edidBytes));
+            //显示器的制造日期， 获取的日期信息格式为："月/年"。
             displayInfo.put("manufacturerDate", (EdidUtil.getWeek(edidBytes) * 12 / 52 + 1) + '/' + EdidUtil.getYear(edidBytes));
+            //显示器 EDID 版本号
             displayInfo.put("version", EdidUtil.getVersion(edidBytes));
+            //显示器的高度和宽度，以厘米为单位
             displayInfo.put("cmHeight", EdidUtil.getHcm(edidBytes));
             displayInfo.put("cmWidth", EdidUtil.getVcm(edidBytes));
+            //显示器的高度和宽度，以英寸为单位.
             displayInfo.put("inHeight", EdidUtil.getHcm(edidBytes) / 2.54);
             displayInfo.put("inWidth", EdidUtil.getVcm(edidBytes) / 2.54);
+            //显示器的 toString() 方法返回的字符串，通常是显示器的简要描述。
             displayInfo.put("toString", String.valueOf(display));
             byte[][] descriptorBytes = EdidUtil.getDescriptors(edidBytes);
             for (byte[] bytes : descriptorBytes) {
                 switch (EdidUtil.getDescriptorType(bytes)) {
+                    //0xff: 序列号。
                     case 0xff:
                         displayInfo.put("serialNumber", EdidUtil.getDescriptorText(bytes));
                         break;
+                    //0xfe: 未指定文本（通常是默认或空白描述）。
                     case 0xfe:
                         displayInfo.put("unspecifiedText", EdidUtil.getDescriptorText(bytes));
                         break;
+                    //0xfd: 范围限制（例如显示器支持的分辨率范围）。
                     case 0xfd:
                         displayInfo.put("rangeLimits", EdidUtil.getDescriptorRangeLimits(bytes));
                         break;
+                    //0xfc: 显示器名称。
                     case 0xfc:
                         displayInfo.put("monitorName", EdidUtil.getDescriptorText(bytes));
                         break;
+                    //白点数据（显示器色彩校准信息）。
                     case 0xfb:
                         displayInfo.put("whitePointData", ParseUtil.byteArrayToHexString(bytes));
                         break;
+                    //标准时序 ID（显示器的标准显示时序）
                     case 0xfa:
                         displayInfo.put("standardTimingId", ParseUtil.byteArrayToHexString(bytes));
                         break;
                     default:
+                        //0x00 - 0x0f: 制造商特定的数据，通常是显示器的扩展功能或厂商专有的信息
                         if (EdidUtil.getDescriptorType(bytes) <= 0x0f && EdidUtil.getDescriptorType(bytes) >= 0x00) {
                             displayInfo.put("manufacturerData", ParseUtil.byteArrayToHexString(bytes));
-                        } else {
+                        } else {//表示显示器的首选时序。
                             displayInfo.put("preferredTiming", EdidUtil.getTimingDescriptor(bytes));
                         }
                 }
@@ -937,11 +989,17 @@ public class OShiUtil {
         long freeMem = runtime.freeMemory();
         long usedMem = totalMem - freeMem;
         long maxMem = runtime.maxMemory();
+        // JVM 中总的内存量。表示 JVM 分配给程序的总内存大小。该值包括已使用和未使用的内存。
         jvmMemory.put("total", FormatUtil.formatBytes(totalMem));
+        //JVM 最大可分配的内存。表示 JVM 可以使用的最大内存量。这个值由 JVM 启动时的配置参数（如 -Xmx）决定。
         jvmMemory.put("max", FormatUtil.formatBytes(maxMem));
+        // JVM 中当前未被使用的内存。表示当前空闲的内存空间。
         jvmMemory.put("free", FormatUtil.formatBytes(freeMem));
+        //JVM 中已使用的内存。通过计算 totalMem - freeMem 来获取，表示当前已经被 JVM 使用的内存量。
         jvmMemory.put("used", FormatUtil.formatBytes(usedMem));
+        // JVM 内存的使用率。通过 (100D * usedMem / totalMem) 计算并格式化为百分比，表示当前已使用的内存占总内存的百分比。
         jvmMemory.put("usageRate", String.format("%.2f", 100D * usedMem / totalMem) + "%");
+        //JVM 内存的空闲率。通过 (100D * freeMem / totalMem) 计算并格式化为百分比，表示当前空闲的内存占总内存的百分比。
         jvmMemory.put("freeRate", String.format("%.2f", 100D * freeMem / totalMem) + "%");
         return jvmMemory;
     }
