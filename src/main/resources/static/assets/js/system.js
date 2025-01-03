@@ -138,10 +138,82 @@ const systemHtml = `
     <el-card class="system-card" size="small">
       <template #header>
         <div class="card-header">
-          <span class="iconfont tsai-cpu">CPU占用率</span>
+          <span class="iconfont tsai-wangluo1">网络接口信息</span>
         </div>
       </template>
-       
+       <el-table
+        :data="networkInterfaceTableData" 
+        style="width: 100%"
+        show-overflow-tooltip
+        row-key="index"
+        empty-text="暂无网络接口数据"
+        header-cell-class-name="process-header-cell"
+        header-row-class-name="process-header-row"
+        cell-class-name="process-cell-cls"
+        height="calc(100% - 1px)" stripe fit>
+        <el-table-column prop="name" label="名称"/>
+        <el-table-column prop="displayName" label="显式名称"/>
+        <el-table-column prop="ifAlias" label="别名"/>
+        <el-table-column prop="iPv4addr" label="IPv4地址" align="center"/>
+        <el-table-column prop="macAddr" label="MAC地址" />
+        <el-table-column prop="speed" label="接口速率" align="center"/>
+        <el-table-column prop="subnetMasks" label="子网掩码" align="center"/>
+        <el-table-column prop="bytesReceive" label="接收数据" align="center"/>
+        <el-table-column prop="bytesSent" label="发送数据" align="center"/>
+        <el-table-column prop="ifOperStatus" label="状态" align="center"/>
+        <el-table-column prop="inErrors" label="错误数量" align="center"/>
+        <el-table-column prop="packetsReceive" label="总数据包数" align="center"/>
+      </el-table>
+    </el-card>
+    <el-card class="system-card" size="small">
+      <template #header>
+        <div class="card-header">
+          <span class="iconfont tsai-icon_shujuxian">USB设备信息</span>
+        </div>
+      </template>
+       <el-table
+        :data="usbInfoTableData" 
+        style="width: 100%"
+        show-overflow-tooltip
+        row-key="index"
+        empty-text="暂无USB设备数据"
+        header-cell-class-name="process-header-cell"
+        header-row-class-name="process-header-row"
+        cell-class-name="process-cell-cls"
+        height="calc(100% - 1px)" stripe fit>
+        <el-table-column prop="name" label="设备名称"/>
+        <el-table-column prop="uniqueDeviceId" label="设备标识"/>
+        <el-table-column prop="vendor" label="设备厂商"/>
+        <el-table-column prop="productId" label="产品标识" align="center"/>
+        <el-table-column prop="serialNumber" label="序列号" />
+        <el-table-column prop="vendorId" label="厂商标识" align="center"/>
+      </el-table>
+    </el-card>
+    <el-card class="system-card" size="small">
+      <template #header>
+        <div class="card-header">
+          <span class="iconfont tsai-IPdizhi">IP数据统计</span>
+        </div>
+      </template>
+       <el-table
+          :data="ipInfoTableData" 
+          style="width: 100%"
+          show-overflow-tooltip
+          row-key="index"
+          empty-text="暂无IP数据"
+          header-cell-class-name="process-header-cell"
+          header-row-class-name="process-header-row"
+          cell-class-name="process-cell-cls"
+          height="calc(100% - 1px)" stripe fit>
+        <el-table-column prop="foreignAddress" label="远程地址"/>
+        <el-table-column prop="foreignPort" label="远程端口"/>
+        <el-table-column prop="localAddress" label="本地地址"/>
+        <el-table-column prop="localPort" label="本地端口" align="center"/>
+        <el-table-column prop="type" label="连接类型" />
+        <el-table-column prop="receiveQueue" label="接收队列" align="center"/>
+        <el-table-column prop="transmitQueue" label="发送队列" align="center"/>
+        <el-table-column prop="state" label="状态" align="center"/>
+      </el-table>
     </el-card>
   </div>
 `
@@ -163,6 +235,15 @@ const SystemComp = {
 
     const diskStoreInfo = ref({})
     const diskStoreTableData = ref([])
+
+    const networkInterface = ref({})
+    const networkInterfaceTableData = ref([])
+
+    const usbInfo = ref()
+    const usbInfoTableData = ref([])
+
+    const ipInfoTableData = ref([])
+    const ipInfo = ref()
 
     // 折线图
     const powerLineOption = ref({});
@@ -218,6 +299,17 @@ const SystemComp = {
         })
     }
 
+    const getIpStatistics = () => {
+      get('/oshi/getIpStatistics')
+        .then((res) => {
+          ipInfo.value = res
+          ipInfoTableData.value = res?.ipConnections
+        })
+        .catch(error => {
+          console.log(error);
+        })
+    }
+
     const getProcessesInfo = () => {
       get('/oshi/getProcessesInfo')
         .then((res) => {
@@ -240,6 +332,26 @@ const SystemComp = {
         })
     }
 
+    const getNetWorkInterfaces = () => {
+      get('/oshi/getNetWorkInterfaces')
+        .then((res) => {
+          networkInterfaceTableData.value = res
+        })
+        .catch(error => {
+          console.log(error);
+        })
+    }
+
+    const getUsbDevicesInfo = () => {
+      get('/oshi/getUsbDevicesInfo')
+        .then((res) => {
+          usbInfoTableData.value = res
+        })
+        .catch(error => {
+          console.log(error);
+        })
+    }
+
     onMounted(() => {
       initCharts();
       getMemoryInfo()
@@ -247,11 +359,19 @@ const SystemComp = {
       getSystemInfo()
       getProcessesInfo()
       getDiskStoreInfo()
+      getNetWorkInterfaces()
+      getUsbDevicesInfo()
+      getIpStatistics()
       setInterval(function () {
         getJvmInfo()
+      }, 1000);
+      setInterval(function () {
         getProcessesInfo()
         getDiskStoreInfo()
-      }, 1000);
+        getNetWorkInterfaces()
+        getUsbDevicesInfo()
+        getIpStatistics()
+      }, 5000);
     });
 
     const updateUsageRateArray = () => {
@@ -667,7 +787,12 @@ const SystemComp = {
       processTableData,
       processInfo,
       diskStoreTableData,
-      diskStoreInfo
+      diskStoreInfo,
+      networkInterfaceTableData,
+      networkInterface,
+      usbInfoTableData,
+      usbInfo,
+      ipInfoTableData
     };
   }
 }
