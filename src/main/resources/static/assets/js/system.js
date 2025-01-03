@@ -92,6 +92,22 @@ const systemHtml = `
           <span class="iconfont tsai-fuwuqi">服务器进程信息</span>
         </div>
       </template>
+      <el-table 
+        :data="processTableData" 
+        style="width: 100%"
+        show-overflow-tooltip
+        empty-text="暂无进程数据"
+        header-cell-class-name="process-header-cell"
+        header-row-class-name="process-header-row"
+        cell-class-name="process-cell-cls"
+        height="calc(100% - 1px)" stripe fit>
+        <el-table-column prop="processName" label="进程名称"/>
+        <el-table-column prop="priority" label="优先级" align="center"/>
+        <el-table-column prop="residentSetSize" label="占用内存" align="center"/>
+        <el-table-column prop="threadCount" label="线程数" align="center"/>
+        <el-table-column prop="memUsageRate" label="内存使用率" align="center"/>
+        <el-table-column prop="cpuUsageRate" label="CPU使用率" align="center"/>
+      </el-table>
     </el-card>
     <el-card class="system-card" size="small">
       <template #header>
@@ -99,7 +115,25 @@ const systemHtml = `
           <span class="iconfont tsai-zujian-cipanIO">磁盘信息</span>
         </div>
       </template>
-      
+      <el-table
+        :data="diskStoreTableData" 
+        style="width: 100%"
+        show-overflow-tooltip
+        row-key="index"
+        empty-text="暂无磁盘数据"
+        header-cell-class-name="process-header-cell"
+        header-row-class-name="process-header-row"
+        cell-class-name="process-cell-cls"
+        height="calc(100% - 1px)" stripe fit>
+        <el-table-column prop="diskName" label="磁盘名称"/>
+        <el-table-column prop="diskSerial" label="磁盘序列号" align="center"/>
+        <el-table-column prop="partitionName" label="分区名称" />
+        <el-table-column prop="type" label="分区类型" align="center"/>
+        <el-table-column prop="identification" label="分区标识" align="center"/>
+        <el-table-column prop="size" label="总容量" align="center"/>
+        <el-table-column prop="mountPoint" label="分区挂载点" align="center"/>
+        <el-table-column prop="minor" label="分区次设备号" align="center"/>
+      </el-table>
     </el-card>
     <el-card class="system-card" size="small">
       <template #header>
@@ -119,9 +153,16 @@ const SystemComp = {
     const jvmInfo = ref({});
     const powerInfo = ref({});
     const memoryInfo = ref({});
+
     const usageRateArray = ref([]);
     const usageRateTimeArray = ref([]);
     const maxLength = 15;
+
+    const processInfo = ref({})
+    const processTableData = ref([])
+
+    const diskStoreInfo = ref({})
+    const diskStoreTableData = ref([])
 
     // 折线图
     const powerLineOption = ref({});
@@ -177,13 +218,39 @@ const SystemComp = {
         })
     }
 
+    const getProcessesInfo = () => {
+      get('/oshi/getProcessesInfo')
+        .then((res) => {
+          processInfo.value = res
+          processTableData.value = res?.osProcessMapList
+        })
+        .catch(error => {
+          console.log(error);
+        })
+    }
+
+    const getDiskStoreInfo = () => {
+      get('/oshi/getDiskStoreInfo')
+        .then((res) => {
+          // diskStoreInfo.value = res
+          diskStoreTableData.value = res
+        })
+        .catch(error => {
+          console.log(error);
+        })
+    }
+
     onMounted(() => {
       initCharts();
       getMemoryInfo()
       setInterval(getMemoryInfo, 60000);
       getSystemInfo()
+      getProcessesInfo()
+      getDiskStoreInfo()
       setInterval(function () {
         getJvmInfo()
+        getProcessesInfo()
+        getDiskStoreInfo()
       }, 1000);
     });
 
@@ -270,11 +337,10 @@ const SystemComp = {
           // 格式化显示内容
           formatter: function (params) {
             let dataStr = `<div><p style="font-weight:bold;padding: 0;margin: 0;">${params.name}</p></div>`
-            dataStr += `<div style="padding: 0;margin: 0">
+            dataStr += `<div style="padding: 0;margin: 8px;">
                             <span style="display:inline-block;border-radius:50%;margin-right:5px;width:6px;height:6px;background-color:${params.color};"></span>
-                            <span>${params.seriesName}:</span>
-                            <span style="float:right;color:#000000;margin-left:5px;">${Number(params.data).toFixed(4)} %</span>
-                          </div>`
+                            <span>${params.seriesName}: ${Number(params.data).toFixed(2)} %</span>
+                        </div>`
             return dataStr
           }
         },
@@ -285,7 +351,7 @@ const SystemComp = {
           right: 10,                            // 分段控制器位置，距离右边定位 right
           pieces: [
             // 若不指定 max ，则为无限小（！没写反！）
-            {max:0},
+            {max: 0},
             // 0 ~ 50 颜色设置为：#096
             {
               gt: 0,
@@ -305,7 +371,7 @@ const SystemComp = {
               color: '#ff0000'
             },
             // 若不指定 min ,则为无限大（！没写反！）
-            {min:100},
+            {min: 100},
           ]
         },
         yAxis: {
@@ -387,8 +453,8 @@ const SystemComp = {
           left: 'center',                 // 图例的水平位置，居中
           itemWidth: 10,                  // 图标宽度
           itemHeight: 10,                 // 图标高度
-          itemGap: 12,                    // 间隔
-          data: ['可用内存','已使用内存']
+          itemGap: 4,                    // 间隔
+          data: ['可用内存', '已使用内存']
         },
         tooltip: {
           show: true,                       // 是否显示提示框，false表示不显示
@@ -447,11 +513,11 @@ const SystemComp = {
             data: [
               {
                 name: '可用内存',
-                value: memoryInfo.value?.available?.replace(/[^0-9\.]/g,''),
+                value: memoryInfo.value?.available?.replace(/[^0-9\.]/g, ''),
               },
               {
                 name: '已使用内存',
-                value: memoryInfo.value?.used?.replace(/[^0-9\.]/g,''),
+                value: memoryInfo.value?.used?.replace(/[^0-9\.]/g, ''),
                 itemStyle: {
                   normal: {
                     color: {                            // 完成的圆环的颜色
@@ -478,15 +544,15 @@ const SystemComp = {
       }
 
       powerHistogramOption.value = {
-        color: ['#4E83B3', '#D14351'], // 配置各版块颜色
+        color: ['#71B1F9', '#D14351'], // 配置各版块颜色
         legend: {
           top: '5%',                      // 位置距离顶部 5%
-          left: '1%',                     // 图例的水平位置，位置距离左边 1%
+          left: 'center',                 // 图例的水平位置，位置居中，也可以写成 left:1%
           icon: 'circle',                 // 图标改为小圆点
           itemWidth: 10,                  // 图标宽度
           itemHeight: 10,                 // 图标高度
-          itemGap: 0,                     // 间隔
-          data: ['可用虚拟内存','已使用虚拟内存']
+          itemGap: 3,                     // 间隔
+          data: ['可用交换空间', '已用交换空间']
         },
         tooltip: {
           show: true,                       // 是否显示提示框，false表示不显示
@@ -511,7 +577,7 @@ const SystemComp = {
             },
             label: {
               show: false,                                        // 是否显示标签
-              formatter: '{b}: {c} GB \n\n 占比: {d}% ',          // 自定义lable处展示那些数据及其格式
+              formatter: '{b}: {c} GB \n 占比: {d}% ',            // 自定义lable处展示那些数据及其格式
               fontSize: 8,                                       // 字体大小
               // position: 'center'                              // center表示放在扇区中心位置
             },
@@ -544,12 +610,12 @@ const SystemComp = {
             // 数据项
             data: [
               {
-                name: '可用虚拟内存',
-                value: memoryInfo.value?.virtualMemory?.virtualMax?.replace(/[^0-9\.]/g,'') - memoryInfo.value?.virtualMemory?.virtualInUse?.replace(/[^0-9\.]/g,''),
+                name: '可用交换空间',
+                value: memoryInfo.value?.virtualMemory?.swapTotal?.replace(/[^0-9\.]/g, '') - memoryInfo.value?.virtualMemory?.swapUsed?.replace(/[^0-9\.]/g, ''),
               },
               {
-                name: '已使用虚拟内存',
-                value: memoryInfo.value?.virtualMemory?.virtualInUse?.replace(/[^0-9\.]/g,''),
+                name: '已用交换空间',
+                value: memoryInfo.value?.virtualMemory?.swapUsed?.replace(/[^0-9\.]/g, ''),
                 itemStyle: {
                   normal: {
                     color: {                            // 完成的圆环的颜色
@@ -589,12 +655,19 @@ const SystemComp = {
       powerHistogramChart.value = echarts.init(powerChartHistogramDom);
       window.addEventListener("resize", function () {
         powerCircusChart.value?.resize();
-        powerHistogramChart?.resize();
+        powerHistogramChart.value?.resize();
         powerLineChart.value?.resize();
       });
     }
 
 
-    return {systemInfo, jvmInfo};
+    return {
+      systemInfo,
+      jvmInfo,
+      processTableData,
+      processInfo,
+      diskStoreTableData,
+      diskStoreInfo
+    };
   }
 }

@@ -329,40 +329,69 @@ public class OShiUtil {
      * @return {@link List}
      */
     public static List<Map<String, Object>> getDiskStoreInfo() {
-        final List<HWDiskStore> diskStores = hal.getDiskStores();
-        final List<Map<String, Object>> dsList = new ArrayList<>(diskStores.size());
+        List<HWDiskStore> diskStores = hal.getDiskStores();
+        List<Map<String, Object>> dsList = new ArrayList<>(diskStores.size());
         for (int i = 0; i < diskStores.size(); i++) {
-            final HWDiskStore hwDiskStore = diskStores.get(i);
-            final Map<String, Object> hwDsMap = new ConcurrentHashMap<>();
+            HWDiskStore hwDiskStore = diskStores.get(i);
+            Map<String, Object> hwDsMap = new ConcurrentHashMap<>();
+            // 磁盘在列表中的索引位置，用于区分不同的磁盘。
             hwDsMap.put("index", i);
+            // 磁盘对象的字符串表示。通常是该磁盘的简要描述信息，方便查看磁盘信息。
             hwDsMap.put("toString", String.valueOf(hwDiskStore));
-            hwDsMap.put("name", hwDiskStore.getName());
+            // 磁盘的名称。通常是磁盘的设备名称，如 /dev/sda 或 C: 等。
+            hwDsMap.put("diskName", hwDiskStore.getName());
+            // 当前磁盘的队列长度，表示有多少个请求排队等待磁盘处理。
             hwDsMap.put("currentQueueLength", hwDiskStore.getCurrentQueueLength());
+            // 磁盘的型号信息，例如硬盘的生产厂家和型号。
             hwDsMap.put("model", hwDiskStore.getModel());
-            hwDsMap.put("serial", hwDiskStore.getSerial());
+            // 磁盘的序列号，用于唯一标识该磁盘。
+            hwDsMap.put("diskSerial", hwDiskStore.getSerial());
+            // 磁盘的总容量，单位为字节。通过 FormatUtil.formatBytes() 格式化后，转换为可读性较好的单位（如 GB、MB）。
             hwDsMap.put("size", FormatUtil.formatBytes(hwDiskStore.getSize()));
+            // 表示磁盘读取的数据量，单位是字节（将字节数转换为更易读的格式，如 KiB、MiB 等）。
             hwDsMap.put("reads", FormatUtil.formatBytes(hwDiskStore.getReads()));
+            // 表示磁盘写入的数据量，单位是字节。
             hwDsMap.put("writes", FormatUtil.formatBytes(hwDiskStore.getWrites()));
+            // 磁盘读取的总字节数。表示自系统启动以来，磁盘读取了多少数据。
             hwDsMap.put("readBytes", hwDiskStore.getReadBytes());
+            // 磁盘写入的总字节数。表示自系统启动以来，磁盘写入了多少数据。
             hwDsMap.put("writeBytes", hwDiskStore.getWriteBytes());
+            // 磁盘的总数据传输时间，表示磁盘在读取和写入过程中消耗的总时间（单位：毫秒）。
             hwDsMap.put("transferTime", hwDiskStore.getTransferTime());
+            // 磁盘的时间戳，通常表示当前磁盘信息的采集时间。
             hwDsMap.put("timeStamp", hwDiskStore.getTimeStamp());
-            final List<HWPartition> partitions = hwDiskStore.getPartitions();
-            final List<Map<String, Object>> partitionList = new ArrayList<>(partitions.size());
+            // 分区信息
+            List<HWPartition> partitions = hwDiskStore.getPartitions();
+            List<Map<String, Object>> partitionList = new ArrayList<>(partitions.size());
             for (HWPartition partition : partitions) {
-                final Map<String, Object> partitionMap = new ConcurrentHashMap<>();
+                Map<String, Object> partitionMap = new ConcurrentHashMap<>();
+                // 分区对象的字符串表示，简要描述该分区的信息。
                 partitionMap.put("toString", partition);
+                // 分区的总容量，单位为字节。通过 FormatUtil.formatBytes() 格式化后，转换为可读性较好的单位（如 GB、MB）。
                 partitionMap.put("size", FormatUtil.formatBytes(partition.getSize()));
-                partitionMap.put("name", partition.getName());
+                // 所属磁盘名称
+                partitionMap.put("diskName",hwDiskStore.getName());
+                // 磁盘的序列号，用于唯一标识该磁盘。
+                partitionMap.put("diskSerial", hwDiskStore.getSerial());
+                // 分区的名称，通常是操作系统识别该分区的名称，如 /dev/sda1、/dev/sdb1 等
+                partitionMap.put("partitionName", partition.getName());
+                // 分区的类型，例如 ext4、ntfs 或 FAT32 等文件系统类型。
                 partitionMap.put("type", partition.getType());
+                // 分区的标识符，通常是唯一的标识符，用于标识该分区。
                 partitionMap.put("identification", partition.getIdentification());
+                // 分区的主设备号，是操作系统用于标识磁盘设备的一个数字编号。
                 partitionMap.put("major", partition.getMajor());
+                // 分区的唯一标识符（UUID）。每个分区有一个唯一的 UUID，用于在不同系统或设备之间识别该分区。
                 partitionMap.put("uuid", partition.getUuid());
+                // 分区的挂载点，即分区在操作系统中的挂载路径。比如 /、/home、/mnt/data 等。
                 partitionMap.put("mountPoint", partition.getMountPoint());
+                // 分区的次设备号，用于标识同一块磁盘上的不同分区。与主设备号一起使用，用于唯一标识一个磁盘分区。
                 partitionMap.put("minor", partition.getMinor());
                 partitionList.add(partitionMap);
             }
             hwDsMap.put("partitionList", partitionList);
+            // 给前端作为树形表格展示用字段
+            hwDsMap.put("children", partitionList);
             dsList.add(hwDsMap);
         }
         return dsList;
@@ -468,45 +497,81 @@ public class OShiUtil {
     public static Map<String, Object> getProcessesInfo() {
         GlobalMemory globalMemory = hal.getMemory();
         Map<String, Object> processesInfoMap = new ConcurrentHashMap<>();
+        // 系统中当前运行的进程总数
         processesInfoMap.put("processCount", operatingSystem.getProcessCount());
+        // threadCount
         processesInfoMap.put("threadCount", operatingSystem.getThreadCount());
         List<OSProcess> osProcessList = operatingSystem.getProcesses(OperatingSystem.ProcessFiltering.ALL_PROCESSES, OperatingSystem.ProcessSorting.CPU_DESC, 100);
+        // osProcessMapList：一个包含多个进程信息的列表，每个进程的信息以 Map<String, Object> 的形式存储，最多包含 100 个进程，按照 CPU 使用率降序排列
         List<Map<String, Object>> osProcessMapList = new ArrayList<>(osProcessList.size());
         for (int i = 0; i < osProcessList.size(); i++) {
             OSProcess osProcess = osProcessList.get(i);
             Map<String, Object> osProcessMap = new ConcurrentHashMap<>();
+            //进程在列表中的索引位置
             osProcessMap.put("index", i);
+            //进程对象的字符串表示，用于简单描述该进程
             osProcessMap.put("toString", String.valueOf(osProcess));
+            //进程的 PID（进程ID），是操作系统为每个进程分配的唯一标识符
             osProcessMap.put("pid", osProcess.getProcessID());
+            //进程在内核模式下消耗的 CPU 时间（以毫秒为单位）
             osProcessMap.put("kernelTime", osProcess.getKernelTime());
+            //进程在用户模式下消耗的 CPU 时间（以毫秒为单位）
             osProcessMap.put("userTime", osProcess.getUserTime());
+            //进程从启动到当前运行的总时间（以毫秒为单位）
             osProcessMap.put("upTime", osProcess.getUpTime());
+            //进程的启动时间戳（以毫秒为单位）
             osProcessMap.put("startTime", osProcess.getStartTime());
+            //进程读取的字节数
             osProcessMap.put("bytesRead", osProcess.getBytesRead());
+            //进程写入的字节数
             osProcessMap.put("bytesWritten", osProcess.getBytesWritten());
+            //进程当前打开的文件列表
             osProcessMap.put("openFiles", osProcess.getOpenFiles());
+            //进程当前允许打开的最大文件数（软限制）
             osProcessMap.put("softOpenFileLimit", osProcess.getSoftOpenFileLimit());
+            //进程允许打开的最大文件数（硬限制）
             osProcessMap.put("hardOpenFileLimit", osProcess.getHardOpenFileLimit());
+            //进程的累计 CPU 使用率，表示进程自启动以来消耗的 CPU 时间与总 CPU 时间的比率
             osProcessMap.put("processCpuLoadCumulative", osProcess.getProcessCpuLoadCumulative());
+            //进程在上一个时间刻度（tick）之间的 CPU 使用率，反映更短时间内的 CPU 使用情况
             osProcessMap.put("processCpuLoadBetweenTicks", osProcess.getProcessCpuLoadBetweenTicks(osProcess));
+            //进程的位数（32位或64位）
             osProcessMap.put("bitNess", osProcess.getBitness());
+            //进程的 CPU 亲和性掩码，指示进程可以在哪些 CPU 上运行
             osProcessMap.put("affinityMask", osProcess.getAffinityMask());
+            //进程发生的轻微页面错误次数（轻微页面错误表示数据不在 CPU 缓存中，但在物理内存中）
             osProcessMap.put("minorFaults", osProcess.getMinorFaults());
+            //进程发生的严重页面错误次数（严重页面错误表示数据需要从磁盘读取）
             osProcessMap.put("majorFaults", osProcess.getMajorFaults());
+            //进程的优先级，影响进程的 CPU 调度
             osProcessMap.put("priority", osProcess.getPriority());
+            //进程当前运行的线程数
             osProcessMap.put("threadCount", osProcess.getThreadCount());
+            //进程所属的组名
             osProcessMap.put("group", osProcess.getGroup());
+            //进程所属的组 ID
             osProcessMap.put("groupId", osProcess.getGroupID());
+            //进程运行的用户名称
             osProcessMap.put("user", osProcess.getUser());
+            //进程运行的用户 ID
             osProcessMap.put("userId", osProcess.getUserID());
+            //进程的当前工作目录
             osProcessMap.put("currentWorkingDirectory", osProcess.getCurrentWorkingDirectory());
+            //进程的可执行文件路径
             osProcessMap.put("path", osProcess.getPath());
+            //启动进程时传递的命令行参数
             osProcessMap.put("arguments", osProcess.getArguments());
+            //进程的环境变量
             osProcessMap.put("environmentVariables", osProcess.getEnvironmentVariables());
+            //进程的 CPU 使用率
             osProcessMap.put("cpuUsageRate", 100d * (osProcess.getKernelTime() + osProcess.getUserTime()) / osProcess.getUpTime());
+            //进程的内存使用率
             osProcessMap.put("memUsageRate", 100d * osProcess.getResidentSetSize() / globalMemory.getTotal());
+            //进程使用的虚拟内存大小，经过格式化以可读方式显示（如 MB 或 GB）
             osProcessMap.put("virtualMemSize", FormatUtil.formatBytes(osProcess.getVirtualSize()));
+            //进程的常驻集大小（RSS），表示进程实际占用的物理内存大小，也经过格式化显示。
             osProcessMap.put("residentSetSize", FormatUtil.formatBytes(osProcess.getResidentSetSize()));
+            //进程的名称。
             osProcessMap.put("processName", osProcess.getName());
             osProcessMapList.add(osProcessMap);
         }
