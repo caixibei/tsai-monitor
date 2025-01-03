@@ -4,17 +4,15 @@ const { createRouter, createWebHashHistory } = VueRouter;
 const routes = [
     { path: '/', component: SystemComp },
     { path: '/system/', component: SystemComp },
-];
+]
 
 const router = createRouter({
     history: createWebHashHistory(),
     routes
-});
+})
 
 const app = createApp({
-    components: {
-        SystemComp
-    },
+    components: { SystemComp },
     setup(){
         const helpMore = ()=>{
             ElementPlus.ElMessage({
@@ -22,8 +20,7 @@ const app = createApp({
                 type: 'warning',
             })
         }
-
-        return {helpMore}
+        return { helpMore }
     }
 });
 
