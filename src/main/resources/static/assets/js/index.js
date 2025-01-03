@@ -14,6 +14,16 @@ const router = createRouter({
 const app = createApp({
     components: {
         SystemComp
+    },
+    setup(){
+        const helpMore = ()=>{
+            ElementPlus.ElMessage({
+                message: '兄嘚~帮不了一点！',
+                type: 'warning',
+            })
+        }
+
+        return {helpMore}
     }
 });
 
