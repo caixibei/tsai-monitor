@@ -122,5 +122,13 @@ git clone https://github.com/oshi/oshi.git && cd oshi
 
 - 手机端
 
+![app.jpg](src%2Fmain%2Fresources%2Fstatic%2Fassets%2Fimage%2Fapp.jpg)
+
+
 - 中小屏幕（平板）
 
+![pad.jpg](src%2Fmain%2Fresources%2Fstatic%2Fassets%2Fimage%2Fpad.jpg)
+
+- 桌面端
+
+![web.jpg](src%2Fmain%2Fresources%2Fstatic%2Fassets%2Fimage%2Fweb.jpg)
