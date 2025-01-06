@@ -2,9 +2,9 @@
   font-family: "iconfont"; /* Project id 4799394 */
   /* Color fonts */
   src: 
-       url('iconfont.woff2?t=1735896167024') format('woff2'),
-       url('iconfont.woff?t=1735896167024') format('woff'),
-       url('iconfont.ttf?t=1735896167024') format('truetype');
+       url('iconfont.woff2?t=1736128596359') format('woff2'),
+       url('iconfont.woff?t=1736128596359') format('woff'),
+       url('iconfont.ttf?t=1736128596359') format('truetype');
 }
 
 .iconfont {
@@ -13,6 +13,14 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.tsai-bangzhu:before {
+  content: "\e6a4";
+}
+
+.tsai-bangzhu1:before {
+  content: "\e689";
 }
 
 .tsai-IPdizhi:before {

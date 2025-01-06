@@ -39,7 +39,7 @@ const systemHtml = `
     <el-card class="system-card" size="small">
       <template #header>
         <div class="card-header">
-          <span class="iconfont tsai-JVM">JVM监控</span>
+          <span class="iconfont tsai-JVM">应用监控</span>
         </div>
       </template>
        <el-form :model="jvmInfo" label-width="'100px'" size="small" label-suffix=":">
@@ -77,7 +77,7 @@ const systemHtml = `
     <el-card class="system-card" size="small">
       <template #header>
         <div class="card-header">
-          <span class="iconfont tsai-neicunshiyongshuai">运行内存监控</span>
+          <span class="iconfont tsai-neicunshiyongshuai">运存监控</span>
         </div>
       </template>
       <div class="power-chart">
@@ -89,7 +89,7 @@ const systemHtml = `
     <el-card class="system-card" size="small">
       <template #header>
         <div class="card-header">
-          <span class="iconfont tsai-fuwuqi">服务器进程信息</span>
+          <span class="iconfont tsai-fuwuqi">进程监控</span>
         </div>
       </template>
       <el-table 
@@ -105,8 +105,16 @@ const systemHtml = `
         <el-table-column prop="priority" label="优先级" align="center"/>
         <el-table-column prop="residentSetSize" label="占用内存" align="center"/>
         <el-table-column prop="threadCount" label="线程数" align="center"/>
-        <el-table-column prop="memUsageRate" label="内存使用率" align="center"/>
-        <el-table-column prop="cpuUsageRate" label="CPU使用率" align="center"/>
+        <el-table-column prop="memUsageRate" label="内存使用率（%）" align="center" sortable width="140">
+            <template #default="{row}">
+                {{Number(row?.memUsageRate) ? Number(row?.memUsageRate).toFixed(4) : row.memUsageRate }}
+            </template>
+        </el-table-column>
+        <el-table-column prop="cpuUsageRate" label="CPU使用率" align="center">
+            <template #default="{row}">
+                {{Number(row?.cpuUsageRate) ? Number(row?.cpuUsageRate).toFixed(4) : row.cpuUsageRate }}
+            </template>
+        </el-table-column>
       </el-table>
     </el-card>
     <el-card class="system-card" size="small">

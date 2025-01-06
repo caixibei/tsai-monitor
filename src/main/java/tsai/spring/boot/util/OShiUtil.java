@@ -1031,7 +1031,7 @@ public class OShiUtil {
         // 用户的语言设置，zh 表示中文（容器环境无访问权限）
         serverSysInfo.put("userLanguage", getSystemProperty("user.language"));
         /*
-         * 系统环境变量
+         * 系统环境变量，部分属性如下：
          * USERDOMAIN_ROAMINGPROFILE：表示用户的域名；
          * PROCESSOR_LEVEL： 处理器级别；
          * SESSIONNAME： 当前会话的名称，Console 表示是本地控制台会话；

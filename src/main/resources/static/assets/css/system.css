@@ -19,6 +19,7 @@
     height: calc(100% - 54px);
 }
 
+/*手机*/
 @media(min-width:320px) and (max-width:480px){
     .system-info {
         overflow-y: auto;
@@ -32,6 +33,41 @@
     }
 }
 
+/*平板*/
+@media screen and (min-width: 768px) {
+    .system-info {
+        overflow-y: auto;
+    }
+    .system-card {
+        flex: 1 1 99%;
+        box-sizing: border-box;
+    }
+    .system-card .el-card__body{
+        overflow: auto;
+    }
+    .system-card {
+        flex: 1 1 49%;
+    }
+}
+
+/*桌面显示器*/
+@media screen and (min-width: 992px) {
+    .system-info {
+        overflow-y: auto;
+    }
+    .system-card {
+        flex: 1 1 99%;
+        box-sizing: border-box;
+    }
+    .system-card .el-card__body{
+        overflow: auto;
+    }
+    .system-card {
+        flex: 1 1 24%;
+    }
+}
+
+
 .system-card .el-card__header{
     padding: 8px 5px !important;
 }
@@ -43,6 +79,8 @@
     font-size: 11px;
     line-height: 12px;
     color: #3D3D3D;
+    display: flex;
+    gap: 5px;
 }
 
 .el-card__body{
