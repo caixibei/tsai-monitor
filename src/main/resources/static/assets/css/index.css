@@ -3,8 +3,8 @@
 }
 
 ::-webkit-scrollbar {
-    width: 1px !important;
-    height: 1px !important;
+    width: 0 !important;
+    height: 0 !important;
     background-color: transparent;
 }
 
@@ -22,14 +22,14 @@
 
 /* vue3 滚动条样式 */
 .el-scrollbar .el-scrollbar__bar.is-horizontal {
-    height: 1px;
+    height: 0;
 }
 .el-scrollbar .el-scrollbar__bar.is-vertical {
-    width: 1px;
+    width: 0;
 }
 .el-scrollbar .el-scrollbar__bar.is-horizontal .el-scrollbar__thumb {
     opacity: 1;
-    height: 1px;
+    height: 0;
     border-radius: 1px;
     background-color: #c6c6c6ff;
     box-shadow: 0 0 1px rgba(0, 0, 0, 0.15);

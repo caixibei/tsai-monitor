@@ -118,3 +118,9 @@ git clone https://github.com/oshi/oshi.git && cd oshi
 - 声卡列表
 - 显卡列表
 
+## 样式演示
+
+- 手机端
+
+- 中小屏幕（平板）
+

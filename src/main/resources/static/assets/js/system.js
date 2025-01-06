@@ -102,9 +102,7 @@ const systemHtml = `
         cell-class-name="process-cell-cls"
         height="calc(100% - 1px)" stripe fit>
         <el-table-column prop="processName" label="进程名称"/>
-        <el-table-column prop="priority" label="优先级" align="center"/>
         <el-table-column prop="residentSetSize" label="占用内存" align="center"/>
-        <el-table-column prop="threadCount" label="线程数" align="center"/>
         <el-table-column prop="memUsageRate" label="内存使用率（%）" align="center" sortable width="140">
             <template #default="{row}">
                 {{Number(row?.memUsageRate) ? Number(row?.memUsageRate).toFixed(4) : row.memUsageRate }}
@@ -115,6 +113,8 @@ const systemHtml = `
                 {{Number(row?.cpuUsageRate) ? Number(row?.cpuUsageRate).toFixed(4) : row.cpuUsageRate }}
             </template>
         </el-table-column>
+        <el-table-column prop="priority" label="优先级" align="center"/>
+        <el-table-column prop="threadCount" label="线程数" align="center"/>
       </el-table>
     </el-card>
     <el-card class="system-card" size="small">
@@ -363,7 +363,7 @@ const SystemComp = {
     onMounted(() => {
       initCharts();
       getMemoryInfo()
-      setInterval(getMemoryInfo, 60000);
+      setInterval(getMemoryInfo, 30000);
       getSystemInfo()
       getProcessesInfo()
       getDiskStoreInfo()
